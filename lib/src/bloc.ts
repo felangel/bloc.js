@@ -2,8 +2,7 @@ import { BehaviorSubject, Subject, Observable } from 'rxjs'
 import { concatMap } from 'rxjs/operators'
 import { BlocSupervisor } from './bloc-supervisor'
 import { Transition } from './transition'
-
-class EventStreamClosedError extends Error {}
+import { EventStreamClosedError } from './errors'
 
 export abstract class Bloc<Event, State> {
   private eventSubject = new Subject<Event>()
@@ -29,7 +28,7 @@ export abstract class Bloc<Event, State> {
   dispatch(event: Event) {
     try {
       if (this.eventSubject.isStopped) {
-        throw new EventStreamClosedError('cannot add new events after calling close')
+        throw new EventStreamClosedError()
       }
       BlocSupervisor.delegate.onEvent(this, event)
       this.onEvent(event)
@@ -69,23 +68,18 @@ export abstract class Bloc<Event, State> {
               return nextState
             }
           } catch (error) {
+            BlocSupervisor.delegate.onError(this, error)
             this.onError(error)
           }
         })
       )
-      .subscribe(
-        async state => {
-          if (typeof state !== 'undefined') {
-            const transition = new Transition(this.currentState, currentEvent, state)
-            BlocSupervisor.delegate.onTransition(this, transition)
-            this.onTransition(transition)
-            this.stateSubject.next(state)
-          }
-        },
-        error => {
-          BlocSupervisor.delegate.onError(this, error)
-          this.onError(error)
+      .subscribe(async state => {
+        if (typeof state !== 'undefined') {
+          const transition = new Transition(this.currentState, currentEvent, state)
+          BlocSupervisor.delegate.onTransition(this, transition)
+          this.onTransition(transition)
+          this.stateSubject.next(state)
         }
-      )
+      })
   }
 }

@@ -8,9 +8,6 @@ export class BlocSupervisor {
   }
 
   static set delegate(value: BlocDelegate) {
-    if (value === null || typeof value === 'undefined') {
-      return
-    }
     this._delegate = value
   }
 }

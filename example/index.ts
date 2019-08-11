@@ -1,11 +1,23 @@
-import { Bloc, Transition } from 'bloc';
+import { Bloc, BlocSupervisor, BlocDelegate, Transition } from 'bloc';
 
 enum CounterEvent {
     increment = 'INCREMENT',
     decrement = 'DECREMENT',
-    doNothing = 'DO_NOTHING',
-    doUndefined = 'DO_UNDEFINED',
-    doNull = 'DO_NULL'
+    doNothing = 'DO_NOTHING'
+}
+
+class MyBlocDelegate extends BlocDelegate {
+    onEvent(_: Bloc<any, any>, event: CounterEvent) {
+        console.log(event);
+    }
+
+    onTransition(_: Bloc<any, any>, transition: Transition<any, any>) {
+        console.log(transition);
+    }
+
+    onError(_: Bloc<any, any>, error: any) {
+        console.log(error);
+    }
 }
 
 class CounterBloc extends Bloc<CounterEvent, number> {
@@ -26,31 +38,14 @@ class CounterBloc extends Bloc<CounterEvent, number> {
             case CounterEvent.doNothing:
                 yield this.currentState;
                 break;
-            case CounterEvent.doUndefined:
-                yield undefined;
-                break;
-            case CounterEvent.doNull:
-                yield null;
-                break;
             default:
                 throw 'unsupported event';
         }
     }
-
-    onEvent(event: CounterEvent) {
-        console.log(`onEvent ${event}`);
-    }
-
-    onTransition(transition: Transition<CounterEvent, number>) {
-        console.log(transition);
-    }
-
-    onError(error: any) {
-        console.log(`onError ${error}`);
-    }
 }
 
 (async function main() {
+    BlocSupervisor.delegate = new MyBlocDelegate();
     const counterBloc = new CounterBloc();
 
     counterBloc.dispatch(CounterEvent.increment);
@@ -61,6 +56,7 @@ class CounterBloc extends Bloc<CounterEvent, number> {
     counterBloc.dispatch(CounterEvent.decrement);
     counterBloc.dispatch(CounterEvent.decrement);
 
+    counterBloc.dispatch(null);
     counterBloc.dispatch(undefined);
 
     counterBloc.dispatch(CounterEvent.increment);
@@ -69,9 +65,6 @@ class CounterBloc extends Bloc<CounterEvent, number> {
     counterBloc.dispatch(CounterEvent.doNothing);
     counterBloc.dispatch(CounterEvent.doNothing);
     counterBloc.dispatch(CounterEvent.doNothing);
-
-    counterBloc.dispatch(CounterEvent.doUndefined);
-    counterBloc.dispatch(CounterEvent.doNull);
 })();
 
 async function wait(ms: number): Promise<void> {

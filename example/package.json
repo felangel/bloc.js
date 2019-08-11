@@ -1,0 +1,21 @@
+{
+  "name": "typescript-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "npm run build && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bloc": "../",
+    "rxjs": "^6.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.11.0",
+    "typescript": "^3.0.3"
+  }
+}

@@ -53,7 +53,7 @@ describe('CounterBloc', () => {
     counterBloc.dispatch(CounterEvent.increment)
     setTimeout(() => {
       counterBloc.dispose()
-    }, 1)
+    }, 0)
   })
 
   it('has correct state after a multiple events are dispatched', async done => {
@@ -89,7 +89,7 @@ describe('CounterBloc', () => {
     counterBloc.dispatch(CounterEvent.increment)
     setTimeout(() => {
       counterBloc.dispose()
-    }, 1)
+    }, 0)
   })
 
   it('has correct state when mapEventToState yields the same state', async done => {
@@ -110,7 +110,7 @@ describe('CounterBloc', () => {
     counterBloc.dispatch(CounterEvent.doNothing)
     setTimeout(() => {
       counterBloc.dispose()
-    }, 1)
+    }, 0)
   })
 
   it('has correct state when mapEventToState throws exception', async done => {
@@ -132,7 +132,7 @@ describe('CounterBloc', () => {
     counterBloc.dispatch(CounterEvent.badEvent)
     setTimeout(() => {
       counterBloc.dispose()
-    }, 1)
+    }, 0)
   })
 
   it('cannot dispatch after dispose called', () => {

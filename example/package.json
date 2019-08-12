@@ -1,7 +1,7 @@
 {
-  "name": "typescript-playground",
+  "name": "bloc-js-example",
   "version": "1.0.0",
-  "description": "",
+  "description": "bloc-js example project",
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bloc": "../",
+    "bloc-js": "../",
     "rxjs": "^6.5.2"
   },
   "devDependencies": {

@@ -1,11 +1,11 @@
 {
-  "name": "bloc",
+  "name": "bloc-js",
   "version": "0.1.0",
   "description": "A predictable state management library that helps implement the BLoC design pattern in JavaScript",
   "keywords": [],
-  "main": "dist/bloc.umd.js",
-  "module": "dist/bloc.es5.js",
-  "typings": "dist/types/bloc.d.ts",
+  "main": "dist/bloc-js.umd.js",
+  "module": "dist/bloc-js.es5.js",
+  "typings": "dist/types/bloc-js.d.ts",
   "files": [
     "dist"
   ],

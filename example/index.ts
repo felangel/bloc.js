@@ -2,13 +2,12 @@ import { Bloc, BlocSupervisor, BlocDelegate, Transition } from '@felangel/bloc';
 
 enum CounterEvent {
     increment = 'INCREMENT',
-    decrement = 'DECREMENT',
-    doNothing = 'DO_NOTHING'
+    decrement = 'DECREMENT'
 }
 
 class MyBlocDelegate extends BlocDelegate {
     onEvent(_: Bloc<any, any>, event: CounterEvent) {
-        console.log(event);
+        console.log(`dispatched ${event}`);
     }
 
     onTransition(_: Bloc<any, any>, transition: Transition<any, any>) {
@@ -16,7 +15,7 @@ class MyBlocDelegate extends BlocDelegate {
     }
 
     onError(_: Bloc<any, any>, error: any) {
-        console.log(error);
+        console.log(`error: ${error}`);
     }
 }
 
@@ -35,11 +34,6 @@ class CounterBloc extends Bloc<CounterEvent, number> {
                 await wait(500); // Simulating Latency
                 yield this.currentState - 1;
                 break;
-            case CounterEvent.doNothing:
-                yield this.currentState;
-                break;
-            default:
-                throw 'unsupported event';
         }
     }
 }
@@ -54,13 +48,6 @@ class CounterBloc extends Bloc<CounterEvent, number> {
 
     counterBloc.dispatch(CounterEvent.decrement);
     counterBloc.dispatch(CounterEvent.decrement);
-    counterBloc.dispatch(CounterEvent.decrement);
-
-    counterBloc.dispatch(CounterEvent.doNothing);
-    counterBloc.dispatch(null);
-    counterBloc.dispatch(undefined);
-
-    counterBloc.dispatch(CounterEvent.increment);
     counterBloc.dispatch(CounterEvent.decrement);
 })();
 

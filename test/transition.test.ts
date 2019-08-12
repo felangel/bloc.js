@@ -1,4 +1,4 @@
-import { Transition } from '../lib/bloc-js'
+import { Transition } from '../lib/bloc'
 import { CounterEvent } from './test-helpers'
 
 describe('Transition', () => {

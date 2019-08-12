@@ -1,4 +1,4 @@
-import { Bloc, BlocDelegate, NextFunction } from '../lib/bloc-js'
+import { Bloc, BlocDelegate, NextFunction } from '../lib/bloc'
 import { Observable } from 'rxjs'
 import { distinct, switchMap } from 'rxjs/operators'
 

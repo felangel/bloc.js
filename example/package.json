@@ -1,21 +1,21 @@
 {
-  "name": "bloc-js-example",
-  "version": "1.0.0",
-  "description": "bloc-js example project",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "npm run build && node dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "bloc-js": "../",
-    "rxjs": "^6.5.2"
-  },
-  "devDependencies": {
-    "@types/node": "^10.11.0",
-    "typescript": "^3.0.3"
-  }
+    "name": "bloc-example",
+    "version": "1.0.0",
+    "description": "bloc example project",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "start": "npm run build && node dist/index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@felangel/bloc": "../",
+        "rxjs": "^6.5.2"
+    },
+    "devDependencies": {
+        "@types/node": "^10.11.0",
+        "typescript": "^3.0.3"
+    }
 }

@@ -1,4 +1,4 @@
-import { BlocDelegate, Transition } from '../lib/bloc-js'
+import { BlocDelegate, Transition } from '../lib/bloc'
 import { CounterBloc, CounterEvent, CounterBlocError } from './test-helpers'
 
 describe('BlocDelegate', () => {

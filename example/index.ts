@@ -1,4 +1,4 @@
-import { Bloc, BlocSupervisor, BlocDelegate, Transition } from 'bloc-js';
+import { Bloc, BlocSupervisor, BlocDelegate, Transition } from '@felangel/bloc';
 
 enum CounterEvent {
     increment = 'INCREMENT',

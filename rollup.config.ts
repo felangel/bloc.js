@@ -7,7 +7,7 @@ import json from 'rollup-plugin-json'
 
 const pkg = require('./package.json')
 
-const libraryName = 'bloc-js'
+const libraryName = 'bloc'
 
 export default {
   input: `lib/${libraryName}.ts`,

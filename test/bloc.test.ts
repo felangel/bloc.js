@@ -1,4 +1,4 @@
-import { BlocDelegate, BlocSupervisor, Transition, EventStreamClosedError } from '../lib/bloc-js'
+import { BlocDelegate, BlocSupervisor, Transition, EventStreamClosedError } from '../lib/bloc'
 import {
   CounterBloc,
   CounterEvent,

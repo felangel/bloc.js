@@ -1,4 +1,4 @@
-import { BlocSupervisor, BlocDelegate } from '../lib/bloc-js'
+import { BlocSupervisor, BlocDelegate } from '../lib/bloc'
 import { MyBlocDelegate } from './test-helpers'
 
 describe('BlocSupervisor', () => {

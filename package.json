@@ -2,7 +2,12 @@
   "name": "bloc-js",
   "version": "0.1.0",
   "description": "A predictable state management library that helps implement the BLoC design pattern in JavaScript",
-  "keywords": [],
+  "keywords": [
+    "state-management",
+    "business-logic",
+    "BLoC",
+    "bloc"
+  ],
   "main": "dist/bloc-js.umd.js",
   "module": "dist/bloc-js.es5.js",
   "typings": "dist/types/bloc-js.d.ts",
@@ -12,14 +17,14 @@
   "author": "Felix Angelov <felangelov@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/felangel/bloc.js"
   },
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'lib/src/**/*.ts' 'test/**/*.ts'",
+    "lint": "tslint --project tsconfig.json -t codeFrame 'lib/src/**/*.ts' 'test/**/*.ts'",
     "format": "prettier --write \"lib/src/**/*.ts\"",
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file lib",

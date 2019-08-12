@@ -1,4 +1,6 @@
-import { Bloc, BlocDelegate } from '../lib/bloc'
+import { Bloc, BlocDelegate, NextFunction } from '../lib/bloc'
+import { Observable } from 'rxjs'
+import { distinct, switchMap } from 'rxjs/operators'
 
 export class CounterBlocError extends Error {}
 
@@ -28,6 +30,18 @@ export class CounterBloc extends Bloc<CounterEvent, number> {
       case CounterEvent.badEvent:
         throw new CounterBlocError()
     }
+  }
+}
+
+export class DistinctCounterBloc extends CounterBloc {
+  transform(events: Observable<CounterEvent>, next: NextFunction<CounterEvent, number>) {
+    return super.transform(events.pipe(distinct()), next)
+  }
+}
+
+export class SwitchMapCounterBloc extends CounterBloc {
+  transform(events: Observable<CounterEvent>, next: NextFunction<CounterEvent, number>) {
+    return events.pipe(switchMap(next))
   }
 }
 

@@ -1,8 +1,10 @@
-import { BehaviorSubject, Subject, Observable } from 'rxjs'
+import { BehaviorSubject, Subject, Observable, OperatorFunction, from } from 'rxjs'
 import { concatMap } from 'rxjs/operators'
 import { BlocSupervisor } from './bloc-supervisor'
 import { Transition } from './transition'
 import { EventStreamClosedError } from './errors'
+
+export type NextFunction<Event, State> = (value: Event, index: number) => Promise<State | undefined>
 
 export abstract class Bloc<Event, State> {
   private eventSubject = new Subject<Event>()
@@ -44,6 +46,10 @@ export abstract class Bloc<Event, State> {
     this.eventSubject.complete()
   }
 
+  transform(events: Observable<Event>, next: NextFunction<Event, State>) {
+    return events.pipe(concatMap(next))
+  }
+
   onEvent(_event: Event) {
     return
   }
@@ -58,28 +64,49 @@ export abstract class Bloc<Event, State> {
 
   private bindStateSubject() {
     let currentEvent: Event
-    this.eventSubject
-      .pipe(
-        concatMap(async event => {
-          currentEvent = event
-          try {
-            for await (const nextState of this.mapEventToState(event)) {
-              if (this.currentState === nextState || this.stateSubject.isStopped) return
-              return nextState
-            }
-          } catch (error) {
-            BlocSupervisor.delegate.onError(this, error)
-            this.onError(error)
-          }
-        })
-      )
-      .subscribe(async state => {
-        if (typeof state !== 'undefined') {
-          const transition = new Transition(this.currentState, currentEvent, state)
-          BlocSupervisor.delegate.onTransition(this, transition)
-          this.onTransition(transition)
-          this.stateSubject.next(state)
+    this.transform(this.eventSubject, async (event: Event) => {
+      currentEvent = event
+      try {
+        for await (const nextState of this.mapEventToState(event)) {
+          if (this.currentState === nextState || this.stateSubject.isStopped) return
+          return nextState
         }
-      })
+      } catch (error) {
+        BlocSupervisor.delegate.onError(this, error)
+        this.onError(error)
+      }
+    }).subscribe((nextState: State | undefined) => {
+      if (typeof nextState === 'undefined') {
+        return
+      }
+      const transition = new Transition(this.currentState, currentEvent, nextState)
+      BlocSupervisor.delegate.onTransition(this, transition)
+      this.onTransition(transition)
+      this.stateSubject.next(nextState)
+    })
+
+    // this.eventSubject
+    //   .pipe(
+    //     concatMap(async event => {
+    //       currentEvent = event
+    //       try {
+    //         for await (const nextState of this.mapEventToState(event)) {
+    //           if (this.currentState === nextState || this.stateSubject.isStopped) return
+    //           return nextState
+    //         }
+    //       } catch (error) {
+    //         BlocSupervisor.delegate.onError(this, error)
+    //         this.onError(error)
+    //       }
+    //     })
+    //   )
+    //   .subscribe(async state => {
+    //     if (typeof state !== 'undefined') {
+    //       const transition = new Transition(this.currentState, currentEvent, state)
+    //       BlocSupervisor.delegate.onTransition(this, transition)
+    //       this.onTransition(transition)
+    //       this.stateSubject.next(state)
+    //     }
+    //   })
   }
 }

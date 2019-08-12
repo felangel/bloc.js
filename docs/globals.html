@@ -2386,11 +2386,14 @@ img {
 		<li class=" tsd-kind-class">
 			<a href="classes/blocsupervisor.html" class="tsd-kind-icon">Bloc<wbr>Supervisor</a>
 		</li>
-		<li class=" tsd-kind-class tsd-is-not-exported">
+		<li class=" tsd-kind-class">
 			<a href="classes/eventstreamclosederror.html" class="tsd-kind-icon">Event<wbr>Stream<wbr>Closed<wbr>Error</a>
 		</li>
 		<li class=" tsd-kind-class tsd-has-type-parameter">
 			<a href="classes/transition.html" class="tsd-kind-icon">Transition</a>
+		</li>
+		<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+			<a href="globals.html#nextfunction" class="tsd-kind-icon">Next<wbr>Function</a>
 		</li>
 	</ul>
 </nav>
@@ -2398,12 +2401,14 @@ img {
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
 			<img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_logo_full.png" height="60" alt="Bloc" />
-			<p><a href="https://gitter.im/bloc_package/Lobby"><img src="https://img.shields.io/badge/gitter-chat-hotpink.svg" alt="Gitter"></a>
+			<p><a href="https://travis-ci.org/felangel/bloc.js"><img src="https://travis-ci.org/felangel/bloc.js.svg?branch=master" alt="Build Status"></a>
+				<a href="https://codecov.io/gh/felangel/bloc.js"><img src="https://codecov.io/gh/felangel/bloc.js/branch/master/graph/badge.svg" alt="codecov"></a>
+				<a href="https://gitter.im/bloc_package/Lobby"><img src="https://img.shields.io/badge/gitter-chat-hotpink.svg" alt="Gitter"></a>
 			<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-purple.svg" alt="License: MIT"></a></p>
 			<hr>
 			<p><a href="https://github.com/felangel/bloc">Bloc</a> for JavaScript</p>
 			<a href="#maintainers" id="maintainers" style="color: inherit; text-decoration: none;">
-				<h2>Maintainers</h2>
+				<h3>Maintainers</h3>
 			</a>
 			<ul>
 				<li><a href="https://github.com/felangel">Felix Angelov</a></li>
@@ -2419,10 +2424,62 @@ img {
 							<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/bloc.html" class="tsd-kind-icon">Bloc</a></li>
 							<li class="tsd-kind-class"><a href="classes/blocdelegate.html" class="tsd-kind-icon">Bloc<wbr>Delegate</a></li>
 							<li class="tsd-kind-class"><a href="classes/blocsupervisor.html" class="tsd-kind-icon">Bloc<wbr>Supervisor</a></li>
-							<li class="tsd-kind-class tsd-is-not-exported"><a href="classes/eventstreamclosederror.html" class="tsd-kind-icon">Event<wbr>Stream<wbr>Closed<wbr>Error</a></li>
+							<li class="tsd-kind-class"><a href="classes/eventstreamclosederror.html" class="tsd-kind-icon">Event<wbr>Stream<wbr>Closed<wbr>Error</a></li>
 							<li class="tsd-kind-class tsd-has-type-parameter"><a href="classes/transition.html" class="tsd-kind-icon">Transition</a></li>
 						</ul>
 					</section>
+					<section class="tsd-index-section ">
+						<h3>Type aliases</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="globals.html#nextfunction" class="tsd-kind-icon">Next<wbr>Function</a></li>
+						</ul>
+					</section>
+				</div>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Type aliases</h2>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter">
+				<a name="nextfunction" class="tsd-anchor"></a>
+				<h3>Next<wbr>Function</h3>
+				<div class="tsd-signature tsd-kind-icon">Next<wbr>Function&lt;Event, State&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/felangel/bloc.js/blob/7fcc8f0/lib/src/bloc.ts#L7">src/bloc.ts:7</a></li>
+					</ul>
+				</aside>
+				<h4 class="tsd-type-parameters-title">Type parameters</h4>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>Event</h4>
+					</li>
+					<li>
+						<h4>State</h4>
+					</li>
+				</ul>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter-siganture">
+							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Event</span>, index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">State</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></li>
+							</ul>
+							<ul class="tsd-descriptions">
+								<li class="tsd-description">
+									<h4 class="tsd-parameters-title">Parameters</h4>
+									<ul class="tsd-parameters">
+										<li>
+											<h5>value: <span class="tsd-signature-type">Event</span></h5>
+										</li>
+										<li>
+											<h5>index: <span class="tsd-signature-type">number</span></h5>
+										</li>
+									</ul>
+									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">State</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h4>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</section>
 		</section>

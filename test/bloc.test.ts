@@ -1,5 +1,11 @@
 import { BlocDelegate, BlocSupervisor, Transition, EventStreamClosedError } from '../lib/bloc'
-import { CounterBloc, CounterEvent, CounterBlocError } from './test-helpers'
+import {
+  CounterBloc,
+  CounterEvent,
+  CounterBlocError,
+  DistinctCounterBloc,
+  SwitchMapCounterBloc
+} from './test-helpers'
 
 describe('CounterBloc', () => {
   let counterBloc: CounterBloc
@@ -11,6 +17,10 @@ describe('CounterBloc', () => {
     spyOn(blocDelegate, 'onEvent').and.returnValue(undefined)
     spyOn(blocDelegate, 'onTransition').and.returnValue(undefined)
     spyOn(blocDelegate, 'onError').and.returnValue(undefined)
+  })
+
+  afterEach(() => {
+    counterBloc.dispose()
   })
 
   it('is instantiable', () => {
@@ -108,6 +118,58 @@ describe('CounterBloc', () => {
       }
     )
     counterBloc.dispatch(CounterEvent.doNothing)
+    setTimeout(() => {
+      counterBloc.dispose()
+    }, 0)
+  })
+
+  it('has correct state when transform used to filter distinct events', async done => {
+    counterBloc = new DistinctCounterBloc()
+    const emittedStates: number[] = []
+    counterBloc.state.subscribe(
+      state => {
+        emittedStates.push(state)
+      },
+      undefined,
+      () => {
+        expect(emittedStates).toEqual([0, 1])
+        expect(blocDelegate.onEvent).toBeCalledWith(counterBloc, CounterEvent.increment)
+        expect(blocDelegate.onTransition).toBeCalledWith(
+          counterBloc,
+          new Transition(0, CounterEvent.increment, 1)
+        )
+        expect(blocDelegate.onError).not.toBeCalled()
+        done()
+      }
+    )
+    counterBloc.dispatch(CounterEvent.increment)
+    counterBloc.dispatch(CounterEvent.increment)
+    setTimeout(() => {
+      counterBloc.dispose()
+    }, 0)
+  })
+
+  it('has correct state when transform used to switchMap events', async done => {
+    counterBloc = new SwitchMapCounterBloc()
+    const emittedStates: number[] = []
+    counterBloc.state.subscribe(
+      state => {
+        emittedStates.push(state)
+      },
+      undefined,
+      () => {
+        expect(emittedStates).toEqual([0, -1])
+        expect(blocDelegate.onEvent).toBeCalledWith(counterBloc, CounterEvent.decrement)
+        expect(blocDelegate.onTransition).toBeCalledWith(
+          counterBloc,
+          new Transition(0, CounterEvent.decrement, -1)
+        )
+        expect(blocDelegate.onError).not.toBeCalled()
+        done()
+      }
+    )
+    counterBloc.dispatch(CounterEvent.increment)
+    counterBloc.dispatch(CounterEvent.decrement)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)

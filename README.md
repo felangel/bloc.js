@@ -9,6 +9,6 @@
 
 [Bloc](https://github.com/felangel/bloc) for JavaScript
 
-## Maintainers
+### Maintainers
 
 - [Felix Angelov](https://github.com/felangel)

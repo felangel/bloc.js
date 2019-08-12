@@ -56,15 +56,12 @@ class CounterBloc extends Bloc<CounterEvent, number> {
     counterBloc.dispatch(CounterEvent.decrement);
     counterBloc.dispatch(CounterEvent.decrement);
 
+    counterBloc.dispatch(CounterEvent.doNothing);
     counterBloc.dispatch(null);
     counterBloc.dispatch(undefined);
 
     counterBloc.dispatch(CounterEvent.increment);
     counterBloc.dispatch(CounterEvent.decrement);
-
-    counterBloc.dispatch(CounterEvent.doNothing);
-    counterBloc.dispatch(CounterEvent.doNothing);
-    counterBloc.dispatch(CounterEvent.doNothing);
 })();
 
 async function wait(ms: number): Promise<void> {

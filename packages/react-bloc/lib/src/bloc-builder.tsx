@@ -38,10 +38,10 @@ export class BlocBuilder<B extends Bloc<any, S>, S>  extends React.Component<Blo
     private subscribe(): void {
         if(this.bloc.state !== null) {
             this.subscription = this.bloc.state.pipe(skip(1)).subscribe((state: S | null) => {
-                let condition : boolean;
                 if(state === null) {
                     return;
                 }
+                let condition: boolean;
                 if(this.condition !== null) {
                     condition = this.condition.call(this, this.previousState, state);
                 } else {
@@ -49,11 +49,10 @@ export class BlocBuilder<B extends Bloc<any, S>, S>  extends React.Component<Blo
                 }
 
                 if(condition) {
-                    console.log(state);
                     this.setState({blocState: state});
                     this.blocState = state;
                 }
-                this.previousState = state
+                this.previousState = state;
             })
         }
     }

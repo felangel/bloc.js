@@ -107,7 +107,6 @@ describe("BlocProvider", () => {
     wrapper.find('BlocBuilder').first().update();
     normalText = wrapper.find('#normal-counter-tag');
     let blocBuilder = wrapper.find('BlocBuilder').first();
-    console.log(blocBuilder.state());
   })
 
 })

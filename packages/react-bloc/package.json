@@ -1,6 +1,6 @@
 {
-  "name": "react-bloc",
-  "version": "0.0.0",
+  "name": "@felangel/react-bloc",
+  "version": "0.1.0",
   "description": "",
   "keywords": [],
   "main": "dist/react-bloc.umd.js",
@@ -9,36 +9,14 @@
   "files": [
     "dist"
   ],
-  "author": "ericktorres <ericktorresdeveloper@gmail.com>",
+  "author": "Felix Angelov <felangelov@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/felangel/bloc.js"
   },
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
-  },
-  "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
-    "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
-    "test:watch": "jest --coverage --watch",
-    "test:prod": "npm run lint && npm run test -- --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "commit": "git-cz",
-    "semantic-release": "semantic-release",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "travis-deploy-once": "travis-deploy-once"
-  },
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write",
-      "git add"
-    ]
   },
   "config": {
     "commitizen": {
@@ -56,28 +34,9 @@
       "tsx",
       "js"
     ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
-    },
-    "collectCoverageFrom": [
-      "src/*.{js,ts}"
-    ],
     "setupFilesAfterEnv": [
       "./setupTests.ts"
     ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
   },
   "commitlint": {
     "extends": [

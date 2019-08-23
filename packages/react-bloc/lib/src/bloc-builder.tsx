@@ -38,26 +38,18 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
   }
 
   private subscribe(): void {
-    if (this.bloc.state !== null) {
-      this.subscription = this.bloc.state
-        .pipe(skip(1))
-        .subscribe((state: S | null) => {
-          if (state === null) {
-            return
-          }
+    this.subscription = this.bloc.state.pipe(skip(1)).subscribe((state: S) => {
+      let rebuild: boolean =
+        this.condition !== null
+          ? this.condition.call(this, this.previousState, state)
+          : true
 
-          let rebuild: boolean =
-            this.condition !== null
-              ? this.condition.call(this, this.previousState, state)
-              : true
-
-          if (rebuild) {
-            this.setState({ blocState: state })
-            this.blocState = state
-          }
-          this.previousState = state
-        })
-    }
+      if (rebuild) {
+        this.setState({ blocState: state })
+        this.blocState = state
+      }
+      this.previousState = state
+    })
   }
 
   private unsubscribe(): void {

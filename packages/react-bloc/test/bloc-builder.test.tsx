@@ -78,31 +78,49 @@ describe('BlocProvider', () => {
     expect(normalText.text().includes('0')).toBe(true)
   })
 
-  it('receives events and sends state updates to the component', async () => {
-    let spy = jest.spyOn(CounterApp.prototype, 'dispatchEvent')
+  it('receives events and sends state updates to the component', done => {
     const wrapper = mount(<CounterApp />)
 
     let normalText = wrapper.find('#normal-counter-tag')
-    const conditionalText = wrapper.find('#counter-condition-tag')
+    let conditionalText = wrapper.find('#counter-condition-tag')
     expect(normalText.text().includes('0')).toBe(true)
     expect(normalText.text().includes('0')).toBe(true)
     expect(conditionalText.text().includes('0')).toBe(true)
     expect(conditionalText.text().includes('0')).toBe(true)
 
-    expect(spy).not.toHaveBeenCalled()
     expect(wrapper.find('button').length).toBe(1)
     wrapper.find('button').simulate('click')
-    expect(spy).toHaveBeenCalled()
+    wrapper.update()
 
-    wrapper.update()
-    wrapper.update()
-    wrapper.update()
-    wrapper.update()
-    wrapper
-      .find('BlocBuilder')
-      .first()
-      .update()
-    normalText = wrapper.find('#normal-counter-tag')
-    let blocBuilder = wrapper.find('BlocBuilder').first()
+    setImmediate(() => {
+      expect(normalText.text().includes('1')).toBe(true)
+      expect(conditionalText.text().includes('0')).toBe(true)
+      wrapper.unmount()
+      done()
+    })
+  })
+
+  it('only rebuilds when condition evaluates to true', done => {
+    const wrapper = mount(<CounterApp />)
+
+    let normalText = wrapper.find('#normal-counter-tag')
+    let conditionalText = wrapper.find('#counter-condition-tag')
+    expect(normalText.text().includes('0')).toBe(true)
+    expect(normalText.text().includes('0')).toBe(true)
+    expect(conditionalText.text().includes('0')).toBe(true)
+    expect(conditionalText.text().includes('0')).toBe(true)
+
+    expect(wrapper.find('button').length).toBe(1)
+    for (let i = 0; i < 2; ++i) {
+      wrapper.find('button').simulate('click')
+      wrapper.update()
+    }
+
+    setImmediate(() => {
+      expect(normalText.text().includes('2')).toBe(true)
+      expect(conditionalText.text().includes('2')).toBe(true)
+      wrapper.unmount()
+      done()
+    })
   })
 })

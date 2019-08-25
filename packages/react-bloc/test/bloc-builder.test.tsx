@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Bloc } from '@felangel/bloc'
 import { shallow, mount, ReactWrapper } from 'enzyme'
 import 'jsdom-global/register'
+import ReactDOM from 'react-dom'
 
 enum CounterEvent {
   increment,
@@ -25,21 +26,25 @@ class CounterBloc extends Bloc<CounterEvent, number> {
   }
 }
 
-class CounterApp extends React.Component {
-  private bloc: CounterBloc = new CounterBloc()
+type CounterBlocProps<B> = {
+  bloc: B
+  title: string
+}
+
+class CounterApp extends React.Component<CounterBlocProps<CounterBloc>, any> {
   constructor(_: any) {
     super(_)
     this.dispatchEvent = this.dispatchEvent.bind(this)
   }
   dispatchEvent() {
-    this.bloc.dispatch(CounterEvent.increment)
+    this.props.bloc.dispatch(CounterEvent.increment)
   }
   render() {
     return (
       <div id="CounterExample">
-        <h1>CounterApp</h1>
+        <h1>{this.props.title}</h1>
         <BlocBuilder<CounterBloc, number>
-          bloc={this.bloc}
+          bloc={this.props.bloc}
           condition={(previousState, currentState) => {
             return (previousState + currentState) % 3 === 0
           }}
@@ -48,7 +53,7 @@ class CounterApp extends React.Component {
           }}
         />
         <BlocBuilder<CounterBloc, number>
-          bloc={this.bloc}
+          bloc={this.props.bloc}
           builder={count => {
             return <p id="normal-counter-tag">{count}</p>
           }}
@@ -61,7 +66,8 @@ class CounterApp extends React.Component {
 
 describe('BlocProvider', () => {
   it('renders the component properly', () => {
-    const wrapper = mount(<CounterApp />)
+    let bloc: CounterBloc = new CounterBloc()
+    const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
     expect(wrapper.find('div').length).toBe(1)
     expect(wrapper.find('button').length).toBe(1)
     expect(wrapper.find('BlocBuilder').length).toBe(2)
@@ -69,7 +75,8 @@ describe('BlocProvider', () => {
   })
 
   it('passes the initial state to the component', () => {
-    const wrapper = mount(<CounterApp />)
+    let bloc: CounterBloc = new CounterBloc()
+    const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
     const normalText = wrapper.find('#normal-counter-tag')
     const conditionalText = wrapper.find('#counter-condition-tag')
     expect(conditionalText.text().includes('0')).toBe(true)
@@ -78,8 +85,22 @@ describe('BlocProvider', () => {
     expect(normalText.text().includes('0')).toBe(true)
   })
 
+  it('passes the initial state to the component', () => {
+    let bloc: CounterBloc = new CounterBloc()
+    const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
+    const normalText = wrapper.find('#normal-counter-tag')
+    const conditionalText = wrapper.find('#counter-condition-tag')
+    expect(conditionalText.text().includes('0')).toBe(true)
+    expect(conditionalText.text().includes('0')).toBe(true)
+    expect(normalText.text().includes('0')).toBe(true)
+    expect(normalText.text().includes('0')).toBe(true)
+    wrapper.setProps({ title: '321312321' })
+    wrapper.update()
+  })
+
   it('receives events and sends state updates to the component', done => {
-    const wrapper = mount(<CounterApp />)
+    let bloc: CounterBloc = new CounterBloc()
+    const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
 
     let normalText = wrapper.find('#normal-counter-tag')
     let conditionalText = wrapper.find('#counter-condition-tag')
@@ -101,7 +122,8 @@ describe('BlocProvider', () => {
   })
 
   it('only rebuilds when condition evaluates to true', done => {
-    const wrapper = mount(<CounterApp />)
+    let bloc: CounterBloc = new CounterBloc()
+    const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
 
     let normalText = wrapper.find('#normal-counter-tag')
     let conditionalText = wrapper.find('#counter-condition-tag')
@@ -119,6 +141,35 @@ describe('BlocProvider', () => {
     setImmediate(() => {
       expect(normalText.text().includes('2')).toBe(true)
       expect(conditionalText.text().includes('2')).toBe(true)
+      wrapper.unmount()
+      done()
+    })
+  })
+
+  it('updates when the bloc is changed at runtime to a different bloc and unsubscribes from old bloc', done => {
+    let bloc: CounterBloc = new CounterBloc()
+    const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
+
+    let normalText = wrapper.find('#normal-counter-tag')
+    let conditionalText = wrapper.find('#counter-condition-tag')
+    expect(normalText.text().includes('0')).toBe(true)
+    expect(normalText.text().includes('0')).toBe(true)
+    expect(conditionalText.text().includes('0')).toBe(true)
+    expect(conditionalText.text().includes('0')).toBe(true)
+
+    expect(wrapper.find('button').length).toBe(1)
+    for (let i = 0; i < 2; ++i) {
+      wrapper.find('button').simulate('click')
+      wrapper.update()
+    }
+
+    let newBloc: CounterBloc = new CounterBloc()
+    wrapper.setProps({ bloc: newBloc })
+    wrapper.update()
+
+    setImmediate(() => {
+      expect(normalText.text().includes('0')).toBe(true)
+      expect(conditionalText.text().includes('0')).toBe(true)
       wrapper.unmount()
       done()
     })

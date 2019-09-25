@@ -1,4 +1,4 @@
-import { BehaviorSubject, empty, Observable, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, EMPTY } from 'rxjs'
 import { catchError, concatMap } from 'rxjs/operators'
 import { fromAsyncIterable } from './utils/observable-from-async-iterator'
 import { BlocSupervisor } from './bloc-supervisor'
@@ -79,7 +79,7 @@ export abstract class Bloc<Event, State> {
         return fromAsyncIterable<State>(this.mapEventToState(currentEvent)).pipe(
           catchError(error => {
             this.handleError(error)
-            return empty()
+            return EMPTY
           })
         )
       })

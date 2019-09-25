@@ -11,6 +11,7 @@ export function fromAsyncIterable<T>(iterable: AsyncIterable<T>) {
  */
 /** @private */
 function getSymbolAsyncIterator(): symbol {
+  // tslint:disable-next-line: strict-type-predicates
   if (typeof Symbol !== 'function' || !Symbol.asyncIterator) {
     return '@@asyncIterator' as any
   }
@@ -28,7 +29,7 @@ const asyncIterator = getSymbolAsyncIterator()
  */
 function subscribeToAsyncIterable<T>(iterable: AsyncIterable<T>) {
   return function(subscriber: Subscriber<T>) {
-    //@ts-ignore
+    // @ts-ignore
     const iterator = iterable[asyncIterator]() as AsyncIterator<T>
     function step() {
       iterator.next().then(
@@ -53,6 +54,7 @@ function subscribeToAsyncIterable<T>(iterable: AsyncIterable<T>) {
       if (typeof iterator.return === 'function') {
         subscriber.add(() => {
           if (iterator.return) {
+            // tslint:disable-next-line: no-floating-promises
             iterator.return()
           }
         })

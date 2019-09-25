@@ -1,10 +1,11 @@
-import { BehaviorSubject, Subject, Observable, OperatorFunction, from } from 'rxjs'
-import { concatMap } from 'rxjs/operators'
+import { BehaviorSubject, empty, Observable, Subject } from 'rxjs'
+import { catchError, concatMap } from 'rxjs/operators'
+import { fromAsyncIterable } from './utils/observable-from-async-iterator'
 import { BlocSupervisor } from './bloc-supervisor'
-import { Transition } from './transition'
 import { EventStreamClosedError } from './errors'
+import { Transition } from './transition'
 
-export type NextFunction<Event, State> = (value: Event, index: number) => Promise<State | undefined>
+export type NextFunction<Event, State> = (value: Event) => Observable<State>
 
 export abstract class Bloc<Event, State> {
   private eventSubject = new Subject<Event>()
@@ -36,8 +37,7 @@ export abstract class Bloc<Event, State> {
       this.onEvent(event)
       this.eventSubject.next(event)
     } catch (error) {
-      BlocSupervisor.delegate.onError(this, error)
-      this.onError(error)
+      this.handleError(error)
     }
   }
 
@@ -46,8 +46,12 @@ export abstract class Bloc<Event, State> {
     this.eventSubject.complete()
   }
 
-  transform(events: Observable<Event>, next: NextFunction<Event, State>) {
+  transformEvents(events: Observable<Event>, next: NextFunction<Event, State>) {
     return events.pipe(concatMap(next))
+  }
+
+  transformStates(states: Observable<State>) {
+    return states
   }
 
   onEvent(_event: Event) {
@@ -62,51 +66,29 @@ export abstract class Bloc<Event, State> {
     return
   }
 
+  private handleError(error: any) {
+    BlocSupervisor.delegate.onError(this, error)
+    this.onError(error)
+  }
+
   private bindStateSubject() {
     let currentEvent: Event
-    this.transform(this.eventSubject, async (event: Event) => {
-      currentEvent = event
-      try {
-        for await (const nextState of this.mapEventToState(event)) {
-          if (this.currentState === nextState || this.stateSubject.isStopped) return
-          return nextState
-        }
-      } catch (error) {
-        BlocSupervisor.delegate.onError(this, error)
-        this.onError(error)
-      }
-    }).subscribe((nextState: State | undefined) => {
-      if (typeof nextState === 'undefined') {
-        return
-      }
+    this.transformStates(
+      this.transformEvents(this.eventSubject, (event: Event) => {
+        currentEvent = event
+        return fromAsyncIterable<State>(this.mapEventToState(currentEvent)).pipe(
+          catchError(error => {
+            this.handleError(error)
+            return empty()
+          })
+        )
+      })
+    ).subscribe((nextState: State) => {
+      if (this.currentState === nextState || this.stateSubject.closed) return
       const transition = new Transition(this.currentState, currentEvent, nextState)
       BlocSupervisor.delegate.onTransition(this, transition)
       this.onTransition(transition)
       this.stateSubject.next(nextState)
     })
-
-    // this.eventSubject
-    //   .pipe(
-    //     concatMap(async event => {
-    //       currentEvent = event
-    //       try {
-    //         for await (const nextState of this.mapEventToState(event)) {
-    //           if (this.currentState === nextState || this.stateSubject.isStopped) return
-    //           return nextState
-    //         }
-    //       } catch (error) {
-    //         BlocSupervisor.delegate.onError(this, error)
-    //         this.onError(error)
-    //       }
-    //     })
-    //   )
-    //   .subscribe(async state => {
-    //     if (typeof state !== 'undefined') {
-    //       const transition = new Transition(this.currentState, currentEvent, state)
-    //       BlocSupervisor.delegate.onTransition(this, transition)
-    //       this.onTransition(transition)
-    //       this.stateSubject.next(state)
-    //     }
-    //   })
   }
 }

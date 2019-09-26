@@ -34,13 +34,13 @@ export class CounterBloc extends Bloc<CounterEvent, number> {
 }
 
 export class DistinctCounterBloc extends CounterBloc {
-  transform(events: Observable<CounterEvent>, next: NextFunction<CounterEvent, number>) {
-    return super.transform(events.pipe(distinct()), next)
+  transformEvents(events: Observable<CounterEvent>, next: NextFunction<CounterEvent, number>) {
+    return super.transformEvents(events.pipe(distinct()), next)
   }
 }
 
 export class SwitchMapCounterBloc extends CounterBloc {
-  transform(events: Observable<CounterEvent>, next: NextFunction<CounterEvent, number>) {
+  transformEvents(events: Observable<CounterEvent>, next: NextFunction<CounterEvent, number>) {
     return events.pipe(switchMap(next))
   }
 }

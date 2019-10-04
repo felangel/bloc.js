@@ -9,7 +9,7 @@ node_js:
   - "10"
 script:
   - cd packages/bloc && npm i && npm run test:prod && npm run build
-  - cd packages/react-bloc && npm i && npm run test:prod && npm run build
+  - cd ../react-bloc && npm i && npm run test:prod && npm run build
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 branches:

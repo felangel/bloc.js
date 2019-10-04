@@ -7,9 +7,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 ---
-
-[Bloc](https://github.com/felangel/bloc) for JavaScript
-
+A React package that helps implements the [BLoC pattern](https://www.didierboelens.com/2018/08/reactive-programming---streams---bloc/)
+This package is built to work with [bloc](https://github.com/felangel/bloc.js)
 ### Maintainers
 
 - [Felix Angelov](https://github.com/felangel)

@@ -3,16 +3,16 @@ import * as React from 'react'
 import { Subscription } from 'rxjs'
 import { skip } from 'rxjs/operators'
 
-type BlocBuilderCondition<S> = (previous: S, current: S) => boolean
-type BlocElementBuilder<S> = (state: S) => JSX.Element
+export type BlocBuilderCondition<S> = (previous: S, current: S) => boolean
+export type BlocElementBuilder<S> = (state: S) => JSX.Element
 
-type BlocBuilderProps<B extends Bloc<any, S>, S> = {
+export type BlocBuilderProps<B extends Bloc<any, S>, S> = {
   bloc: B
   builder: BlocElementBuilder<S>
   condition?: BlocBuilderCondition<S>
 }
 
-type BlocStateType<S> = {
+export type BlocStateType<S> = {
   blocState: S
 }
 

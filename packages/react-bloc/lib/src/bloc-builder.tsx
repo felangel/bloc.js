@@ -22,7 +22,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
 > {
   private bloc: B
   private previousState: S
-  private subscription: Subscription | null
+  private subscription: Subscription
   private condition: BlocBuilderCondition<S> | null
   private builder: BlocElementBuilder<S>
 
@@ -32,7 +32,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     this.builder = props.builder
     this.condition = props.condition || null
     this.previousState = this.bloc.currentState
-    this.subscription = null
+    this.subscription = Subscription.EMPTY
     this.state = {
       blocState: this.bloc.currentState
     }
@@ -52,20 +52,15 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
   }
 
   private unsubscribe(): void {
-    if (this.subscription !== null) {
-      this.subscription.unsubscribe()
-      this.subscription = null
-    }
+    this.subscription.unsubscribe()
   }
 
   componentDidUpdate(prevProps: BlocBuilderProps<B, S>) {
     if (prevProps.bloc !== this.props.bloc) {
-      if (this.subscription !== null) {
-        this.unsubscribe()
-        this.bloc = this.props.bloc
-        this.previousState = this.bloc.currentState
-        this.setState({ blocState: this.bloc.currentState })
-      }
+      this.unsubscribe()
+      this.bloc = this.props.bloc
+      this.previousState = this.bloc.currentState
+      this.setState({ blocState: this.bloc.currentState })
       this.subscribe()
     }
   }

@@ -24,7 +24,7 @@ The goal of this library is to make it easy to separate _presentation_ from _bus
 
 - [Official Documentation](https://felangel.github.io/bloc)
 - [Bloc Package](https://github.com/felangel/bloc.js/tree/master/packages/bloc/README.md)
-- [React Bloc Package](https://github.com/felangel/bloc./tree/master/packages/react-bloc/README.md)
+- [React Bloc Package](https://github.com/felangel/bloc.js/tree/master/packages/react-bloc/README.md)
 
 ### Maintainers
 

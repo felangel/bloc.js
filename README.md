@@ -12,7 +12,7 @@ A predictable state management library that helps implement the [BLoC design pat
 | Package                                                                           | NPM                                                                                                                 |
 | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | [bloc](https://github.com/felangel/bloc.js/tree/master/packages/bloc)             | [![npm](https://badge.fury.io/js/%40felangel%2Fbloc.svg)](https://www.npmjs.com/package/@felangel/bloc)             |
-| [react-bloc](https://github.com/felangel/bloc.js/tree/master/packages/react-bloc) | [![npm](https://badge.fury.io/js/%40felangel%2Freact-bloc.svg)](https://www.npmjs.com/package/@felangel/react-bloc) |  |
+| [react-bloc](https://github.com/felangel/bloc.js/tree/master/packages/react-bloc) | [![npm](https://badge.fury.io/js/%40felangel%2Freact-bloc.svg)](https://www.npmjs.com/package/@felangel/react-bloc) |
 
 ## Overview
 

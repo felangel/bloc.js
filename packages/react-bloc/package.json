@@ -18,6 +18,9 @@
     "dist"
   ],
   "author": "Felix Angelov <felangelov@gmail.com>",
+  "contributors": [
+    "Erick Torres <ericktorresdeveloper@gmail.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/felangel/bloc.js"

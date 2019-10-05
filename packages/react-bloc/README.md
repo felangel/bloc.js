@@ -5,7 +5,7 @@
 
 ---
 
-[Bloc](https://github.com/felangel/bloc) for JavaScript
+[Bloc](https://github.com/felangel/bloc) for React
 
 ### Maintainers
 

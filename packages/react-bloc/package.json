@@ -50,7 +50,7 @@
       "./setupTests.ts"
     ],
     "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -77,7 +77,7 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "@felangel/bloc": "^0.1.0",
+    "@felangel/bloc": "^0.2.0",
     "@types/enzyme": "^3.10.3",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/jest": "^23.3.2",

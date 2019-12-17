@@ -16,18 +16,16 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     return this.stateSubject.value
   }
 
-  
-
-  listen(onData: (value: State) => void, onError?: ((onError: any) => any) | undefined, onDone?: (() => any) | undefined): Subscription {
-    return this.stateSubject.subscribe(
-      onData,
-      onError,
-      onDone,
-    )
+  listen(
+    onData: (value: State) => void,
+    onError?: ((onError: any) => any) | undefined,
+    onDone?: (() => any) | undefined
+  ): Subscription {
+    return this.stateSubject.subscribe(onData, onError, onDone)
   }
 
   constructor() {
-    super();
+    super()
     this.stateSubject = new BehaviorSubject(this.initialState())
     this.bindStateSubject()
   }

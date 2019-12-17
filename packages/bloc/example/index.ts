@@ -7,7 +7,7 @@ enum CounterEvent {
 
 class MyBlocDelegate extends BlocDelegate {
     onEvent(_: Bloc<any, any>, event: CounterEvent) {
-        console.log(`dispatched ${event}`);
+        console.log(`added ${event}`);
     }
 
     onTransition(_: Bloc<any, any>, transition: Transition<any, any>) {
@@ -28,11 +28,11 @@ class CounterBloc extends Bloc<CounterEvent, number> {
         switch (event) {
             case CounterEvent.increment:
                 await wait(1000); // Simulating Latency
-                yield this.currentState + 1;
+                yield this.state + 1;
                 break;
             case CounterEvent.decrement:
                 await wait(500); // Simulating Latency
-                yield this.currentState - 1;
+                yield this.state - 1;
                 break;
         }
     }
@@ -42,13 +42,13 @@ class CounterBloc extends Bloc<CounterEvent, number> {
     BlocSupervisor.delegate = new MyBlocDelegate();
     const counterBloc = new CounterBloc();
 
-    counterBloc.dispatch(CounterEvent.increment);
-    counterBloc.dispatch(CounterEvent.increment);
-    counterBloc.dispatch(CounterEvent.increment);
+    counterBloc.add(CounterEvent.increment);
+    counterBloc.add(CounterEvent.increment);
+    counterBloc.add(CounterEvent.increment);
 
-    counterBloc.dispatch(CounterEvent.decrement);
-    counterBloc.dispatch(CounterEvent.decrement);
-    counterBloc.dispatch(CounterEvent.decrement);
+    counterBloc.add(CounterEvent.decrement);
+    counterBloc.add(CounterEvent.decrement);
+    counterBloc.add(CounterEvent.decrement);
 })();
 
 async function wait(ms: number): Promise<void> {

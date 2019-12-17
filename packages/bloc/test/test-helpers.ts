@@ -19,13 +19,13 @@ export class CounterBloc extends Bloc<CounterEvent, number> {
   async *mapEventToState(event: CounterEvent) {
     switch (event) {
       case CounterEvent.increment:
-        yield this.currentState + 1
+        yield this.state + 1
         break
       case CounterEvent.decrement:
-        yield this.currentState - 1
+        yield this.state - 1
         break
       case CounterEvent.doNothing:
-        yield this.currentState
+        yield this.state
         break
       case CounterEvent.badEvent:
         throw new CounterBlocError()

@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, Subject, EMPTY } from 'rxjs'
+import { BehaviorSubject, Observable, Subject, EMPTY, Subscription } from 'rxjs'
 import { catchError, concatMap } from 'rxjs/operators'
 import { fromAsyncIterable } from './utils/observable-from-async-iterator'
 import { BlocSupervisor } from './bloc-supervisor'
@@ -7,19 +7,27 @@ import { Transition } from './transition'
 
 export type NextFunction<Event, State> = (value: Event) => Observable<State>
 
-export abstract class Bloc<Event, State> {
+export abstract class Bloc<Event, State> extends Observable<State> {
   private eventSubject = new Subject<Event>()
   private stateSubject: BehaviorSubject<State>
 
-  get state(): Observable<State> {
-    return this.stateSubject.asObservable()
-  }
-
-  get currentState(): State {
+  // Returns the current [state] of the [bloc].
+  get state(): State {
     return this.stateSubject.value
   }
 
+  
+
+  listen(onData: (value: State) => void, onError?: ((onError: any) => any) | undefined, onDone?: (() => any) | undefined): Subscription {
+    return this.stateSubject.subscribe(
+      onData,
+      onError,
+      onDone,
+    )
+  }
+
   constructor() {
+    super();
     this.stateSubject = new BehaviorSubject(this.initialState())
     this.bindStateSubject()
   }
@@ -28,7 +36,7 @@ export abstract class Bloc<Event, State> {
 
   abstract mapEventToState(event: Event): AsyncIterableIterator<State>
 
-  dispatch(event: Event) {
+  add(event: Event) {
     try {
       if (this.eventSubject.isStopped) {
         throw new EventStreamClosedError()
@@ -84,8 +92,8 @@ export abstract class Bloc<Event, State> {
         )
       })
     ).subscribe((nextState: State) => {
-      if (this.currentState === nextState || this.stateSubject.closed) return
-      const transition = new Transition(this.currentState, currentEvent, nextState)
+      if (this.state === nextState || this.stateSubject.closed) return
+      const transition = new Transition(this.state, currentEvent, nextState)
       BlocSupervisor.delegate.onTransition(this, transition)
       this.onTransition(transition)
       this.stateSubject.next(nextState)

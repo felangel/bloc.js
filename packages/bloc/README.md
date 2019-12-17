@@ -71,10 +71,10 @@ class CounterBloc extends Bloc<CounterEvent, number> {
   async *mapEventToState(event: CounterEvent) {
     switch (event) {
       case CounterEvent.increment:
-        yield this.currentState + 1
+        yield this.state + 1
         break
       case CounterEvent.decrement:
-        yield this.currentState - 1
+        yield this.state - 1
         break
     }
   }
@@ -97,13 +97,13 @@ Then we can dispatch events to our bloc like so:
 ```typescript
 const counterBloc = new CounterBloc()
 
-counterBloc.dispatch(CounterEvent.increment)
-counterBloc.dispatch(CounterEvent.increment)
-counterBloc.dispatch(CounterEvent.increment)
+counterBloc.add(CounterEvent.increment)
+counterBloc.add(CounterEvent.increment)
+counterBloc.add(CounterEvent.increment)
 
-counterBloc.dispatch(CounterEvent.decrement)
-counterBloc.dispatch(CounterEvent.decrement)
-counterBloc.dispatch(CounterEvent.decrement)
+counterBloc.add(CounterEvent.decrement)
+counterBloc.add(CounterEvent.decrement)
+counterBloc.add(CounterEvent.decrement)
 ```
 
 As our app grows and relies on multiple `Blocs`, it becomes useful to see the `Transitions` for all `Blocs`. This can easily be achieved by implementing a `BlocDelegate`.
@@ -122,13 +122,13 @@ Now that we have our `SimpleBlocDelegate`, we just need to tell the `BlocSupervi
 BlocSupervisor.delegate = new SimpleBlocDelegate()
 const counterBloc = new CounterBloc()
 
-counterBloc.dispatch(CounterEvent.increment) // { currentState: 0, event: CounterEvent.increment, nextState: 1 }
-counterBloc.dispatch(CounterEvent.increment) // { currentState: 1, event: CounterEvent.increment, nextState: 2 }
-counterBloc.dispatch(CounterEvent.increment) // { currentState: 2, event: CounterEvent.increment, nextState: 3 }
+counterBloc.add(CounterEvent.increment) // { currentState: 0, event: CounterEvent.increment, nextState: 1 }
+counterBloc.add(CounterEvent.increment) // { currentState: 1, event: CounterEvent.increment, nextState: 2 }
+counterBloc.add(CounterEvent.increment) // { currentState: 2, event: CounterEvent.increment, nextState: 3 }
 
-counterBloc.dispatch(CounterEvent.decrement) // { currentState: 3, event: CounterEvent.decrement, nextState: 2 }
-counterBloc.dispatch(CounterEvent.decrement) // { currentState: 2, event: CounterEvent.decrement, nextState: 1 }
-counterBloc.dispatch(CounterEvent.decrement) // { currentState: 1, event: CounterEvent.decrement, nextState: 0 }
+counterBloc.add(CounterEvent.decrement) // { currentState: 3, event: CounterEvent.decrement, nextState: 2 }
+counterBloc.add(CounterEvent.decrement) // { currentState: 2, event: CounterEvent.decrement, nextState: 1 }
+counterBloc.add(CounterEvent.decrement) // { currentState: 1, event: CounterEvent.decrement, nextState: 0 }
 ```
 
 At this point, all `Bloc` `Transitions` will be reported to the `SimpleBlocDelegate` and we can see them in the console after running our app.

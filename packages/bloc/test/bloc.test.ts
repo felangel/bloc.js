@@ -31,20 +31,20 @@ describe('CounterBloc', () => {
     expect(counterBloc.initialState()).toEqual(0)
   })
 
-  it('has correct currentState', () => {
-    expect(counterBloc.currentState).toEqual(0)
+  it('has correct state', () => {
+    expect(counterBloc.state).toEqual(0)
   })
 
-  it('has correct state stream before events are dispatched', async done => {
-    counterBloc.state.subscribe(state => {
+  it('has correct state stream before events are added', async done => {
+    counterBloc.listen(state => {
       expect(state).toEqual(0)
       done()
     })
   })
 
-  it('has correct state after a single event is dispatched', async done => {
+  it('has correct state after a single event is added', async done => {
     const emittedStates: number[] = []
-    counterBloc.state.subscribe(
+    counterBloc.listen(
       state => {
         emittedStates.push(state)
       },
@@ -60,15 +60,15 @@ describe('CounterBloc', () => {
         done()
       }
     )
-    counterBloc.dispatch(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)
   })
 
-  it('has correct state after a multiple events are dispatched', async done => {
+  it('has correct state after a multiple events are added', async done => {
     const emittedStates: number[] = []
-    counterBloc.state.subscribe(
+    counterBloc.listen(
       state => {
         emittedStates.push(state)
       },
@@ -94,9 +94,9 @@ describe('CounterBloc', () => {
         done()
       }
     )
-    counterBloc.dispatch(CounterEvent.increment)
-    counterBloc.dispatch(CounterEvent.increment)
-    counterBloc.dispatch(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)
@@ -104,7 +104,7 @@ describe('CounterBloc', () => {
 
   it('has correct state when mapEventToState yields the same state', async done => {
     const emittedStates: number[] = []
-    counterBloc.state.subscribe(
+    counterBloc.listen(
       state => {
         emittedStates.push(state)
       },
@@ -117,7 +117,7 @@ describe('CounterBloc', () => {
         done()
       }
     )
-    counterBloc.dispatch(CounterEvent.doNothing)
+    counterBloc.add(CounterEvent.doNothing)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)
@@ -126,7 +126,7 @@ describe('CounterBloc', () => {
   it('has correct state when transform used to filter distinct events', async done => {
     counterBloc = new DistinctCounterBloc()
     const emittedStates: number[] = []
-    counterBloc.state.subscribe(
+    counterBloc.listen(
       state => {
         emittedStates.push(state)
       },
@@ -142,8 +142,8 @@ describe('CounterBloc', () => {
         done()
       }
     )
-    counterBloc.dispatch(CounterEvent.increment)
-    counterBloc.dispatch(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)
@@ -152,7 +152,7 @@ describe('CounterBloc', () => {
   it('has correct state when transform used to switchMap events', async done => {
     counterBloc = new SwitchMapCounterBloc()
     const emittedStates: number[] = []
-    counterBloc.state.subscribe(
+    counterBloc.listen(
       state => {
         emittedStates.push(state)
       },
@@ -168,8 +168,8 @@ describe('CounterBloc', () => {
         done()
       }
     )
-    counterBloc.dispatch(CounterEvent.increment)
-    counterBloc.dispatch(CounterEvent.decrement)
+    counterBloc.add(CounterEvent.increment)
+    counterBloc.add(CounterEvent.decrement)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)
@@ -177,7 +177,7 @@ describe('CounterBloc', () => {
 
   it('has correct state when mapEventToState throws exception', async done => {
     const emittedStates: number[] = []
-    counterBloc.state.subscribe(
+    counterBloc.listen(
       state => {
         emittedStates.push(state)
       },
@@ -191,15 +191,15 @@ describe('CounterBloc', () => {
         done()
       }
     )
-    counterBloc.dispatch(CounterEvent.badEvent)
+    counterBloc.add(CounterEvent.badEvent)
     setTimeout(() => {
       counterBloc.dispose()
     }, 0)
   })
 
-  it('cannot dispatch after dispose called', () => {
+  it('cannot add after dispose called', () => {
     counterBloc.dispose()
-    counterBloc.dispatch(CounterEvent.increment)
+    counterBloc.add(CounterEvent.increment)
 
     expect(blocDelegate.onError).toBeCalledWith(counterBloc, new EventStreamClosedError())
     expect(blocDelegate.onError).toBeCalledTimes(1)

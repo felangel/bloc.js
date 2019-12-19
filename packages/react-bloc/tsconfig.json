@@ -18,7 +18,6 @@
     ]
   },
   "include": [
-    "lib",
-    "test"
+    "lib"
   ]
 }

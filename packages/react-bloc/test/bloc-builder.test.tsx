@@ -1,9 +1,8 @@
 import { BlocBuilder } from '../lib/react-bloc'
 import * as React from 'react'
 import { Bloc } from '@felangel/bloc'
-import { shallow, mount, ReactWrapper } from 'enzyme'
+import { mount } from 'enzyme'
 import 'jsdom-global/register'
-import ReactDOM from 'react-dom'
 
 enum CounterEvent {
   increment,
@@ -17,10 +16,10 @@ class CounterBloc extends Bloc<CounterEvent, number> {
   async *mapEventToState(event: CounterEvent) {
     switch (event) {
       case CounterEvent.increment:
-        yield this.currentState + 1
+        yield this.state + 1
         break
       case CounterEvent.decrement:
-        yield this.currentState - 1
+        yield this.state - 1
         break
     }
   }
@@ -34,10 +33,10 @@ type CounterBlocProps<B> = {
 class CounterApp extends React.Component<CounterBlocProps<CounterBloc>, any> {
   constructor(_: any) {
     super(_)
-    this.dispatchEvent = this.dispatchEvent.bind(this)
+    this.addEvent = this.addEvent.bind(this)
   }
-  dispatchEvent() {
-    this.props.bloc.dispatch(CounterEvent.increment)
+  addEvent() {
+    this.props.bloc.add(CounterEvent.increment)
   }
   render() {
     return (
@@ -58,7 +57,7 @@ class CounterApp extends React.Component<CounterBlocProps<CounterBloc>, any> {
             return <p id="normal-counter-tag">{count}</p>
           }}
         />
-        <button onClick={this.dispatchEvent}></button>
+        <button onClick={this.addEvent}></button>
       </div>
     )
   }

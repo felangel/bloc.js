@@ -1,6 +1,6 @@
 {
   "name": "@felangel/react-bloc",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React Components that make it easy to implement the BLoC (Business Logic Component) design pattern. Built to be used with the bloc.js state management package.",
   "keywords": [
     "react",
@@ -28,6 +28,9 @@
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json -t codeFrame 'lib/src/**/*.tsx' 'test/**/*.tsx'",
@@ -80,7 +83,6 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "@felangel/bloc": "^0.2.0",
     "@types/enzyme": "^3.10.3",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/jest": "^23.3.2",
@@ -98,7 +100,6 @@
     "lint-staged": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
-    "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "replace-in-file": "^3.4.2",
     "rimraf": "^2.6.2",
@@ -118,6 +119,8 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
+    "@felangel/bloc": "^0.2.3",
+    "react": "^16.9.0",
     "rxjs": "^6.5.2"
   }
 }

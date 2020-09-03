@@ -1,7 +1,6 @@
 import { Bloc } from '@felangel/bloc'
 import * as React from 'react'
 import { Subscription } from 'rxjs'
-import { skip } from 'rxjs/operators'
 
 export type BlocBuilderCondition<S> = (previous: S, current: S) => boolean
 export type BlocElementBuilder<S> = (state: S) => JSX.Element
@@ -31,16 +30,15 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     this.bloc = props.bloc
     this.builder = props.builder
     this.condition = props.condition || null
-    this.previousState = this.bloc.currentState
+    this.previousState = this.bloc.state
     this.subscription = Subscription.EMPTY
     this.state = {
-      blocState: this.bloc.currentState
-    }
-    this.subscribe()
+      blocState: this.bloc.state
+    }    
   }
 
   private subscribe(): void {
-    this.subscription = this.bloc.state.pipe(skip(1)).subscribe((state: S) => {
+    this.subscription = this.bloc.listen((state: S) => {
       let rebuild: boolean =
         this.condition !== null ? this.condition.call(this, this.previousState, state) : true
 
@@ -59,10 +57,14 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     if (prevProps.bloc !== this.props.bloc) {
       this.unsubscribe()
       this.bloc = this.props.bloc
-      this.previousState = this.bloc.currentState
-      this.setState({ blocState: this.bloc.currentState })
+      this.previousState = this.bloc.state
+      this.setState({ blocState: this.bloc.state })
       this.subscribe()
     }
+  }
+
+  componentDidMount() {
+    this.subscribe()
   }
 
   componentWillUnmount() {

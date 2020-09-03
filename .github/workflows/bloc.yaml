@@ -1,6 +1,11 @@
 name: bloc.js
 
 on:
+  push:
+    paths:
+      - "packages/bloc/**"
+      - ".github/workflows/bloc.yaml"
+
   pull_request:
     paths:
       - "packages/bloc/**"

@@ -1,6 +1,11 @@
 name: react-bloc
 
 on:
+  push:
+    paths:
+      - "packages/react-bloc/**"
+      - ".github/workflows/react-bloc.yaml"
+
   pull_request:
     paths:
       - "packages/react-bloc/**"

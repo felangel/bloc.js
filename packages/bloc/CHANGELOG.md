@@ -1,3 +1,10 @@
+# 0.2.1
+
+Internal improvements and documentation updates
+
+- Dependency updates
+- Documentation improvements
+
 # 0.2.0
 
 Feature parity with dart

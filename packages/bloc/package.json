@@ -1,6 +1,6 @@
 {
   "name": "@felangel/bloc",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A predictable state management library that helps implement the BLoC design pattern in JavaScript",
   "keywords": [
     "state-management",

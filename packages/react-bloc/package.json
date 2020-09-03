@@ -13,7 +13,7 @@
   ],
   "main": "dist/react-bloc.umd.js",
   "module": "dist/react-bloc.es5.js",
-  "typings": "dist/types/react-bloc.d.ts",
+  "typings": "dist/types/lib/react-bloc.d.ts",
   "files": [
     "dist"
   ],

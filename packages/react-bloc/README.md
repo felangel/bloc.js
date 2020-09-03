@@ -1,9 +1,9 @@
 <img src="https://raw.githubusercontent.com/felangel/bloc.js/master/packages/react-bloc/assets/react_bloc_logo_full.png" height="60" alt="ReactBloc" />
 
-[![Build Status](https://travis-ci.org/felangel/bloc.js.svg?branch=master)](https://travis-ci.org/felangel/bloc.js)
+[![react-bloc](https://github.com/felangel/bloc.js/workflows/react-bloc/badge.svg)](https://github.com/felangel/bloc.js/actions?query=workflow%3Areact-bloc)
 [![codecov](https://codecov.io/gh/felangel/bloc.js/branch/master/graph/badge.svg)](https://codecov.io/gh/felangel/bloc.js)
 [![npm version](https://badge.fury.io/js/%40felangel%2Freact-bloc.svg)](https://badge.fury.io/js/%40felangel%2Freact-bloc)
-[![Gitter](https://img.shields.io/badge/gitter-chat-hotpink.svg)](https://gitter.im/bloc_package/Lobby)
+[![Discord](https://img.shields.io/discord/649708778631200778.svg?logo=discord&color=blue)](https://discord.gg/Hc5KD3g)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 ---

@@ -4,13 +4,15 @@
   "description": "react-bloc example project",
   "dependencies": {
     "@felangel/react-bloc": "../",
-    "@types/node": "12.7.11",
-    "@types/react": "16.9.5",
-    "@types/react-dom": "16.9.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "^3.4.3",
     "typescript": "3.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "12.7.11",
+    "@types/react": "16.9.5",
+    "@types/react-dom": "16.9.1"
   },
   "scripts": {
     "start": "react-scripts start",

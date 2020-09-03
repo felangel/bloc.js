@@ -1,3 +1,7 @@
+# 0.2.1
+
+Fix compatibility/upgrade issues
+
 # 0.2.0
 
 Internal improvements, documentation updates, and bloc v0.2.0

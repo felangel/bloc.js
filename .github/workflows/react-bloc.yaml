@@ -1,0 +1,23 @@
+name: react-bloc
+
+on:
+  pull_request:
+    paths:
+      - "packages/react-bloc/**"
+      - ".github/workflows/react-bloc.yaml"
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: packages/react-bloc
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+      - run: npm install
+      - run: npm run test:prod
+      - run: npm run build
+      - run: bash <(curl -s https://codecov.io/bash)

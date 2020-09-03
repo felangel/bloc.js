@@ -1,6 +1,6 @@
 {
   "name": "@felangel/bloc",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "A predictable state management library that helps implement the BLoC design pattern in JavaScript",
   "keywords": [
     "state-management",
@@ -22,6 +22,9 @@
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json -t codeFrame 'lib/src/**/*.ts' 'test/**/*.ts'",

@@ -1,3 +1,11 @@
+# 0.2.3
+
+Internal improvements and documentation updates
+
+# 0.2.2
+
+Internal improvements and documentation updates
+
 # 0.2.1
 
 Internal improvements and documentation updates

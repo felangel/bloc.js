@@ -1,9 +1,9 @@
 <img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_logo_full.png" height="60" alt="Bloc" />
 
-[![Build Status](https://travis-ci.org/felangel/bloc.js.svg?branch=master)](https://travis-ci.org/felangel/bloc.js)
+[![bloc.js](https://github.com/felangel/bloc.js/workflows/bloc.js/badge.svg)](https://github.com/felangel/bloc.js/actions?query=workflow%3Abloc.js)
 [![codecov](https://codecov.io/gh/felangel/bloc.js/branch/master/graph/badge.svg)](https://codecov.io/gh/felangel/bloc.js)
 [![npm version](https://badge.fury.io/js/%40felangel%2Fbloc.svg)](https://badge.fury.io/js/%40felangel%2Fbloc)
-[![Gitter](https://img.shields.io/badge/gitter-chat-hotpink.svg)](https://gitter.im/bloc_package/Lobby)
+[![Discord](https://img.shields.io/discord/649708778631200778.svg?logo=discord&color=blue)](https://discord.gg/Hc5KD3g)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -12,7 +12,7 @@
 
 ## Overview
 
-<img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_architecture.png" alt="Bloc Architecture" />
+<img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_architecture.png" width="500" alt="Bloc Architecture" />
 
 The goal of this package is to make it easy to implement the `BLoC` Design Pattern (Business Logic Component).
 

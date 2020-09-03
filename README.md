@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/felangel/bloc.js.svg?branch=master)](https://travis-ci.com/felangel/bloc.js)
 [![codecov](https://codecov.io/gh/felangel/bloc.js/branch/master/graph/badge.svg)](https://codecov.io/gh/felangel/bloc.js)
-[![Gitter](https://img.shields.io/badge/gitter-chat-hotpink.svg)](https://gitter.im/bloc_package/Lobby)
+[![Discord](https://img.shields.io/discord/649708778631200778.svg?logo=discord&color=blue)](https://discord.gg/Hc5KD3g)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
 ---

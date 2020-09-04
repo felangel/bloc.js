@@ -1,15 +1,16 @@
-import { BehaviorSubject, Observable, Subject, EMPTY, Subscription } from 'rxjs'
-import { catchError, concatMap } from 'rxjs/operators'
-import { fromAsyncIterable } from './utils/observable-from-async-iterator'
+import { Observable, Subject, EMPTY, Subscription } from 'rxjs'
+import { catchError, concatMap, map } from 'rxjs/operators'
 import { BlocObserver, EventStreamClosedError, Transition } from '../bloc'
 
-export type NextFunction<Event, State> = (value: Event) => Observable<State>
+export type NextFunction<Event, State> = (value: Event) => Observable<Transition<Event, State>>
 
 export abstract class Bloc<Event, State> extends Observable<State> {
   private static _observer: BlocObserver = new BlocObserver()
 
+  private emitted: boolean = false
   private eventSubject = new Subject<Event>()
-  private stateSubject: BehaviorSubject<State>
+  private stateSubject: Subject<State>
+  private transitionSubscription: Subscription = Subscription.EMPTY
 
   static get observer(): BlocObserver {
     return this._observer
@@ -19,9 +20,8 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     this._observer = value
   }
 
-  // Returns the current [state] of the [bloc].
   get state(): State {
-    return this.stateSubject.value
+    return this._state
   }
 
   listen(
@@ -32,75 +32,100 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     return this.stateSubject.subscribe(onData, onError, onDone)
   }
 
-  constructor(_state: State) {
+  constructor(private _state: State) {
     super()
-    this.stateSubject = new BehaviorSubject(_state)
+    this.stateSubject = new Subject()
     this.bindStateSubject()
   }
 
   abstract mapEventToState(event: Event): AsyncIterableIterator<State>
 
-  add(event: Event) {
+  add(event: Event): void {
     try {
       if (this.eventSubject.isStopped) {
         throw new EventStreamClosedError()
       }
-      Bloc.observer.onEvent(this, event)
       this.onEvent(event)
       this.eventSubject.next(event)
     } catch (error) {
-      this.handleError(error)
+      this.onError(error)
     }
   }
 
-  close() {
+  close(): void {
     this.stateSubject.complete()
     this.eventSubject.complete()
+    this.transitionSubscription.unsubscribe()
   }
 
-  transformEvents(events: Observable<Event>, next: NextFunction<Event, State>) {
+  transformEvents(
+    events: Observable<Event>,
+    next: NextFunction<Event, State>
+  ): Observable<Transition<Event, State>> {
     return events.pipe(concatMap(next))
   }
 
-  transformStates(states: Observable<State>) {
-    return states
+  transformTransitions(
+    transitions: Observable<Transition<Event, State>>
+  ): Observable<Transition<Event, State>> {
+    return transitions
   }
 
-  onEvent(_event: Event) {
+  onEvent(event: Event): void {
+    Bloc.observer.onEvent(this, event)
     return
   }
 
-  onTransition(_transition: Transition<Event, State>) {
+  onTransition(transition: Transition<Event, State>): void {
+    Bloc.observer.onTransition(this, transition)
     return
   }
 
-  onError(_error: any) {
-    return
-  }
-
-  private handleError(error: any) {
+  onError(error: any): void {
     Bloc.observer.onError(this, error)
-    this.onError(error)
+    return
   }
 
-  private bindStateSubject() {
-    let currentEvent: Event
-    this.transformStates(
+  private bindStateSubject(): void {
+    this.transitionSubscription = this.transformTransitions(
       this.transformEvents(this.eventSubject, (event: Event) => {
-        currentEvent = event
-        return fromAsyncIterable<State>(this.mapEventToState(currentEvent)).pipe(
+        return asyncToObservable(this.mapEventToState(event)).pipe(
+          map((nextState: State, _: number) => {
+            return new Transition(this.state, event, nextState)
+          }),
           catchError(error => {
-            this.handleError(error)
+            this.onError(error)
             return EMPTY
           })
         )
       })
-    ).subscribe((nextState: State) => {
-      if (this.state === nextState || this.stateSubject.closed) return
-      const transition = new Transition(this.state, currentEvent, nextState)
-      Bloc.observer.onTransition(this, transition)
-      this.onTransition(transition)
-      this.stateSubject.next(nextState)
+    ).subscribe((transition: Transition<Event, State>) => {
+      if (transition.nextState == this.state && this.emitted) return
+      try {
+        this.onTransition(transition)
+        this._state = transition.nextState
+        this.stateSubject.next(transition.nextState)
+      } catch (error) {
+        this.onError(error)
+      }
+      this.emitted = true
     })
   }
+}
+
+function asyncToObservable<T>(iterable: AsyncIterableIterator<T>): Observable<T> {
+  return new Observable<T>(
+    observer =>
+      void (async () => {
+        try {
+          for await (const item of iterable) {
+            if (observer.closed) return
+            observer.next(item)
+          }
+          observer.complete()
+        } catch (e) {
+          observer.error(e)
+        }
+      })()
+  )
 }

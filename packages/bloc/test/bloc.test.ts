@@ -32,10 +32,20 @@ describe('CounterBloc', () => {
   })
 
   it('has correct state stream before events are added', async done => {
-    counterBloc.listen(state => {
-      expect(state).toEqual(0)
-      done()
-    })
+    const emittedStates: number[] = []
+    counterBloc.listen(
+      state => {
+        emittedStates.push(state)
+      },
+      undefined,
+      () => {
+        expect(emittedStates).toEqual([])
+        done()
+      }
+    )
+    setTimeout(() => {
+      counterBloc.close()
+    }, 0)
   })
 
   it('has correct state after a single event is added', async done => {
@@ -46,7 +56,7 @@ describe('CounterBloc', () => {
       },
       undefined,
       () => {
-        expect(emittedStates).toEqual([0, 1])
+        expect(emittedStates).toEqual([1])
         expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.increment)
         expect(blocObserver.onTransition).toBeCalledWith(
           counterBloc,
@@ -70,7 +80,7 @@ describe('CounterBloc', () => {
       },
       undefined,
       () => {
-        expect(emittedStates).toEqual([0, 1, 2, 3])
+        expect(emittedStates).toEqual([1, 2, 3])
         expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.increment)
         expect(blocObserver.onEvent).toBeCalledTimes(3)
         expect(blocObserver.onTransition).toBeCalledWith(
@@ -108,11 +118,39 @@ describe('CounterBloc', () => {
       () => {
         expect(emittedStates).toEqual([0])
         expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.doNothing)
-        expect(blocObserver.onTransition).not.toBeCalled()
+        expect(blocObserver.onTransition).toBeCalledWith(
+          counterBloc,
+          new Transition(0, CounterEvent.doNothing, 0)
+        )
         expect(blocObserver.onError).not.toBeCalled()
         done()
       }
     )
+    counterBloc.add(CounterEvent.doNothing)
+    setTimeout(() => {
+      counterBloc.close()
+    }, 0)
+  })
+
+  it('has correct state when mapEventToState yields the same state multiple times', async done => {
+    const emittedStates: number[] = []
+    counterBloc.listen(
+      state => {
+        emittedStates.push(state)
+      },
+      undefined,
+      () => {
+        expect(emittedStates).toEqual([0])
+        expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.doNothing)
+        expect(blocObserver.onTransition).toBeCalledWith(
+          counterBloc,
+          new Transition(0, CounterEvent.doNothing, 0)
+        )
+        expect(blocObserver.onError).not.toBeCalled()
+        done()
+      }
+    )
+    counterBloc.add(CounterEvent.doNothing)
     counterBloc.add(CounterEvent.doNothing)
     setTimeout(() => {
       counterBloc.close()
@@ -128,7 +166,7 @@ describe('CounterBloc', () => {
       },
       undefined,
       () => {
-        expect(emittedStates).toEqual([0, 1])
+        expect(emittedStates).toEqual([1])
         expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.increment)
         expect(blocObserver.onTransition).toBeCalledWith(
           counterBloc,
@@ -154,7 +192,7 @@ describe('CounterBloc', () => {
       },
       undefined,
       () => {
-        expect(emittedStates).toEqual([0, -1])
+        expect(emittedStates).toEqual([-1])
         expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.decrement)
         expect(blocObserver.onTransition).toBeCalledWith(
           counterBloc,
@@ -179,7 +217,7 @@ describe('CounterBloc', () => {
       },
       undefined,
       () => {
-        expect(emittedStates).toEqual([0])
+        expect(emittedStates).toEqual([])
         expect(blocObserver.onEvent).toBeCalledWith(counterBloc, CounterEvent.badEvent)
         expect(blocObserver.onTransition).not.toBeCalled()
         expect(blocObserver.onError).toBeCalledWith(counterBloc, new CounterBlocError())
@@ -188,6 +226,27 @@ describe('CounterBloc', () => {
       }
     )
     counterBloc.add(CounterEvent.badEvent)
+    setTimeout(() => {
+      counterBloc.close()
+    }, 0)
+  })
+
+  it('calls onError when onTransition throws', async done => {
+    counterBloc = new CounterBloc(true)
+    const emittedStates: number[] = []
+    counterBloc.listen(
+      state => {
+        emittedStates.push(state)
+      },
+      undefined,
+      () => {
+        expect(emittedStates).toEqual([])
+        expect(blocObserver.onError).toBeCalledWith(counterBloc, new CounterBlocError())
+        expect(blocObserver.onError).toBeCalledTimes(1)
+        done()
+      }
+    )
+    counterBloc.add(CounterEvent.increment)
     setTimeout(() => {
       counterBloc.close()
     }, 0)

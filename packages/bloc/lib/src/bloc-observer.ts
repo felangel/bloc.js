@@ -14,7 +14,9 @@ export class BlocObserver {
    * @param {*} _event
    * @memberof BlocObserver
    */
-  onEvent(_bloc: Bloc<any, any>, _event: any): void {}
+  onEvent(_bloc: Bloc<any, any>, _event: any): void {
+    return
+  }
 
   /**
    * Called whenever a `transition` occurs in any `bloc`.
@@ -23,7 +25,9 @@ export class BlocObserver {
    * @param {Transition<any, any>} _transition
    * @memberof BlocObserver
    */
-  onTransition(_bloc: Bloc<any, any>, _transition: Transition<any, any>): void {}
+  onTransition(_bloc: Bloc<any, any>, _transition: Transition<any, any>): void {
+    return
+  }
 
   /**
    * Called whenever an `error` occurs in any `bloc`.
@@ -32,5 +36,7 @@ export class BlocObserver {
    * @param {*} _error
    * @memberof BlocObserver
    */
-  onError(_bloc: Bloc<any, any>, _error: any): void {}
+  onError(_bloc: Bloc<any, any>, _error: any): void {
+    return
+  }
 }

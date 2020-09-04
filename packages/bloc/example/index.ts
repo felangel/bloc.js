@@ -1,11 +1,18 @@
-import { Bloc, BlocSupervisor, BlocDelegate, Transition } from '@felangel/bloc';
+import { Bloc, BlocObserver, Transition } from '@felangel/bloc';
 
 enum CounterEvent {
     increment = 'INCREMENT',
     decrement = 'DECREMENT'
 }
 
-class MyBlocDelegate extends BlocDelegate {
+class MyBlocObserver extends BlocObserver {
+    /**
+     * Called whenever an `event` is added to any bloc.
+     *
+     * @param {Bloc<any, any>} _
+     * @param {CounterEvent} event
+     * @memberof MyBlocObserver
+     */
     onEvent(_: Bloc<any, any>, event: CounterEvent) {
         console.log(`added ${event}`);
     }
@@ -20,8 +27,8 @@ class MyBlocDelegate extends BlocDelegate {
 }
 
 class CounterBloc extends Bloc<CounterEvent, number> {
-    initialState(): number {
-        return 0;
+    constructor() {
+        super(0);
     }
 
     async *mapEventToState(event: CounterEvent) {
@@ -39,7 +46,7 @@ class CounterBloc extends Bloc<CounterEvent, number> {
 }
 
 (async function main() {
-    BlocSupervisor.delegate = new MyBlocDelegate();
+    Bloc.observer = new MyBlocObserver();
     const counterBloc = new CounterBloc();
 
     counterBloc.add(CounterEvent.increment);

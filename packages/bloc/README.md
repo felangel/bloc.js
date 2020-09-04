@@ -14,64 +14,79 @@
 
 ---
 
-[Bloc](https://github.com/felangel/bloc) for JavaScript/TypeScript
+A javascript library that helps implement the [BLoC pattern](https://www.didierboelens.com/2018/08/reactive-programming---streams---bloc).
 
-## Overview
+**Learn more at [bloclibrary.dev](https://bloclibrary.dev)!**
 
-<img src="https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_architecture.png" width="500" alt="Bloc Architecture" />
+### Bloc
 
-The goal of this package is to make it easy to implement the `BLoC` Design Pattern (Business Logic Component).
+![Bloc Architecture](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_architecture_full.png)
 
-This design pattern helps to separate _presentation_ from _business logic_. Following the BLoC pattern facilitates testability and reusability. This package abstracts reactive aspects of the pattern allowing developers to focus on converting events into states.
+A `Bloc` is a component which converts incoming events into outgoing states.
 
-## Glossary
+![Bloc Flow](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_flow.png)
 
-**Events** are the input to a Bloc. They are commonly UI events such as button presses. `Events` are `dispatched` and then converted to `States`.
+State changes in bloc begin when events are added which triggers `onEvent`. The events are then funnelled through `transformEvents`. By default, `transformEvents` uses `asyncExpand` to ensure each event is processed in the order it was added but it can be overridden to manipulate the incoming event stream. `mapEventToState` is then invoked with the transformed events and is responsible for yielding states in response to the incoming events. `transitions` are then funnelled through `transformTransitions` which can be overridden to manipulation the outgoing state changes. Lastly, `onTransition` is called just before the state is updated and contains the current state, event, and next state.
 
-**States** are the output of a Bloc. Presentation components can listen to the stream of states and redraw portions of themselves based on the given state (see `BlocBuilder` for more details).
+#### Creating a Bloc
 
-**Transitions** occur when an `Event` is `dispatched` after `mapEventToState` has been called but before the `Bloc`'s state has been updated. A `Transition` consists of the currentState, the event which was dispatched, and the nextState.
+```ts
+// The events which `CounterBloc` will react to.
+enum CounterEvent {
+  increment = 'INCREMENT'
+}
 
-**BlocSupervisor** oversees `Bloc`s and delegates to `BlocDelegate`.
-
-**BlocDelegate** handles events from all `Bloc`s which are delegated by the `BlocSupervisor`. Can be used to intercept all `Bloc` events, transitions, and errors. **It is a great way to handle logging/analytics as well as error handling universally**.
-
-## Bloc Interface
-
-**initialState** is the state before any events have been processed (before `mapEventToState` has ever been called). `initialState` **must be implemented**.
-
-**mapEventToState** is a method that **must be implemented** when a class extends `Bloc`. The function takes the incoming event as an argument. `mapEventToState` is called whenever an event is `dispatched` by the presentation layer. `mapEventToState` must convert that event into a new state and return the new state in the form of a `Stream` which is consumed by the presentation layer.
-
-**dispatch** is a method that takes an `event` and triggers `mapEventToState`. `dispatch` may be called from the presentation layer or from within the Bloc (see examples) and notifies the Bloc of a new `event`.
-
-**transformEvents** is a method that transforms the `Stream<Event>` along with a `next` function into a `Stream<State>`. Events that should be processed by `mapEventToState` need to be passed to `next`. **By default `asyncExpand` is used to ensure all events are processed in the order in which they are received**. You can override `transformEvents` for advanced usage in order to manipulate the frequency and specificity with which `mapEventToState` is called as well as which events are processed.
-
-**transformStates** is a method that transforms the `Stream<State>` into a new `Stream<State>`. By default `transformStates` returns the incoming `Stream<State>`. You can override `transformStates` for advanced usage in order to manipulate the frequency and specificity at which `transitions` (state changes) occur.
-
-**onEvent** is a method that can be overridden to handle whenever an `Event` is dispatched. **It is a great place to add bloc-specific logging/analytics**.
-
-**onTransition** is a method that can be overridden to handle whenever a `Transition` occurs. A `Transition` occurs when a new `Event` is dispatched and `mapEventToState` is called. `onTransition` is called before a `Bloc`'s state has been updated. **It is a great place to add bloc-specific logging/analytics**.
-
-**onError** is a method that can be overridden to handle whenever an `Exception` is thrown. By default all exceptions will be ignored and `Bloc` functionality will be unaffected. **It is a great place to add bloc-specific error handling**.
-
-**dispose** is a method that closes the `event` and `state` streams. `Dispose` should be called when a `Bloc` is no longer needed. Once `dispose` is called, `events` that are `dispatched` will not be processed and will result in an error being passed to `onError`. In addition, if `dispose` is called while `events` are still being processed, any `states` yielded after are ignored and will not result in a `Transition`.
-
-## BlocDelegate Interface
-
-**onEvent** is a method that can be overridden to handle whenever an `Event` is dispatched to **any** `Bloc`. **It is a great place to add universal logging/analytics**.
-
-**onTransition** is a method that can be overridden to handle whenever a `Transition` occurs in **any** `Bloc`. **It is a great place to add universal logging/analytics**.
-
-**onError** is a method that can be overriden to handle whenever an `Exception` is thrown from **any** `Bloc`. **It is a great place to add universal error handling**.
-
-## Usage
-
-For simplicity we can create a `CounterBloc` like:
-
-```typescript
+// A `CounterBloc` which handles converting `CounterEvent`s into `int`s.
 class CounterBloc extends Bloc<CounterEvent, number> {
-  initialState(): number {
-    return 0
+  constructor() {
+    // The initial state of the `CounterBloc` is 0.
+    super(0)
+  }
+
+  async *mapEventToState(event: CounterEvent) {
+    switch (event) {
+      // When a `CounterEvent.increment` event is added,
+      // the current `state` of the bloc is accessed via the `state` property
+      // and a new state is emitted via `yield`.
+      case CounterEvent.increment:
+        yield this.state + 1
+        break
+    }
+  }
+}
+```
+
+#### Using a Bloc
+
+```ts
+// Create a `CounterBloc` instance.
+const bloc = new CounterBloc()
+
+// Access the state of the `bloc` via `state`.
+console.log(bloc.state) // 0
+
+// Interact with the `bloc` to trigger `state` changes.
+bloc.add(CounterEvent.increment)
+
+// later...
+
+// Access the new `state`.
+print(bloc.state) // 1
+
+// Close the `bloc` when it is no longer needed.
+bloc.close()
+```
+
+#### Observing a Bloc
+
+```ts
+enum CounterEvent {
+  increment = 'INCREMENT'
+}
+
+class CounterBloc extends Bloc<CounterEvent, number> {
+  constructor() {
+    super(0)
   }
 
   async *mapEventToState(event: CounterEvent) {
@@ -79,99 +94,48 @@ class CounterBloc extends Bloc<CounterEvent, number> {
       case CounterEvent.increment:
         yield this.state + 1
         break
-      case CounterEvent.decrement:
-        yield this.state - 1
-        break
     }
   }
-}
-```
 
-Our `CounterBloc` converts `CounterEvents` to integers.
-
-As a result, we need to define our `CounterEvent` like:
-
-```typescript
-enum CounterEvent {
-  increment = 'INCREMENT',
-  decrement = 'DECREMENT'
-}
-```
-
-Then we can dispatch events to our bloc like so:
-
-```typescript
-const counterBloc = new CounterBloc()
-
-counterBloc.add(CounterEvent.increment)
-counterBloc.add(CounterEvent.increment)
-counterBloc.add(CounterEvent.increment)
-
-counterBloc.add(CounterEvent.decrement)
-counterBloc.add(CounterEvent.decrement)
-counterBloc.add(CounterEvent.decrement)
-```
-
-As our app grows and relies on multiple `Blocs`, it becomes useful to see the `Transitions` for all `Blocs`. This can easily be achieved by implementing a `BlocDelegate`.
-
-```typescript
-class SimpleBlocDelegate extends BlocDelegate {
-  onTransition(_: Bloc<any, any>, transition: Transition<any, any>) {
-    console.log(transition)
-  }
-}
-```
-
-Now that we have our `SimpleBlocDelegate`, we just need to tell the `BlocSupervisor` to use our delegate.
-
-```typescript
-BlocSupervisor.delegate = new SimpleBlocDelegate()
-const counterBloc = new CounterBloc()
-
-counterBloc.add(CounterEvent.increment) // { currentState: 0, event: CounterEvent.increment, nextState: 1 }
-counterBloc.add(CounterEvent.increment) // { currentState: 1, event: CounterEvent.increment, nextState: 2 }
-counterBloc.add(CounterEvent.increment) // { currentState: 2, event: CounterEvent.increment, nextState: 3 }
-
-counterBloc.add(CounterEvent.decrement) // { currentState: 3, event: CounterEvent.decrement, nextState: 2 }
-counterBloc.add(CounterEvent.decrement) // { currentState: 2, event: CounterEvent.decrement, nextState: 1 }
-counterBloc.add(CounterEvent.decrement) // { currentState: 1, event: CounterEvent.decrement, nextState: 0 }
-```
-
-At this point, all `Bloc` `Transitions` will be reported to the `SimpleBlocDelegate` and we can see them in the console after running our app.
-
-If we want to be able to handle any incoming `Events` that are dispatched to a `Bloc` we can also override `onEvent` in our `SimpleBlocDelegate`.
-
-```typescript
-class SimpleBlocDelegate extends BlocDelegate {
-  onEvent(_: Bloc<any, any>, event: CounterEvent) {
-    console.log(`dispatched ${event}`)
+  // Called whenever an `event` is added.
+  onEvent(event: CounterEvent): void {
+    console.log(event)
   }
 
-  onTransition(_: Bloc<any, any>, transition: Transition<any, any>) {
-    console.log(transition)
-  }
-}
-```
-
-If we want to be able to handle any `Exceptions` that might be thrown in a `Bloc` we can also override `onError` in our `SimpleBlocDelegate`.
-
-```typescript
-class SimpleBlocDelegate extends BlocDelegate {
-  onEvent(_: Bloc<any, any>, event: CounterEvent) {
-    console.log(`dispatched ${event}`)
-  }
-
-  onTransition(_: Bloc<any, any>, transition: Transition<any, any>) {
+  // Called whenever a state change is about to occur.
+  onTransition(transition: Transition<any, any>): void {
     console.log(transition)
   }
 
-  onError(_: Bloc<any, any>, error: any) {
-    console.log(`error: ${error}`)
+  // Called whenever an `error` is thrown within `mapEventToState`.
+  onError(error: any): void {
+    console.log(error)
   }
 }
 ```
 
-At this point, all `Bloc` `Exceptions` will also be reported to the `SimpleBlocDelegate` and we can see them in the console.
+`BlocObserver` can be used to observe all `blocs` as well.
+
+```ts
+class MyBlocObserver extends BlocObserver {
+  onEvent(bloc: Bloc<any, any>, event: CounterEvent): void {
+    console.log(event)
+  }
+
+  onTransition(bloc: Bloc<any, any>, transition: Transition<any, any>): void {
+    console.log(transition)
+  }
+
+  onError(bloc: Bloc<any, any>, error: any): void {
+    console.log(error)
+  }
+}
+```
+
+```ts
+Bloc.observer = new MyBlocObserver()
+// Use blocs...
+```
 
 ## Examples
 

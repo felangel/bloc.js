@@ -6,13 +6,6 @@ enum CounterEvent {
 }
 
 class MyBlocObserver extends BlocObserver {
-    /**
-     * Called whenever an `event` is added to any bloc.
-     *
-     * @param {Bloc<any, any>} _
-     * @param {CounterEvent} event
-     * @memberof MyBlocObserver
-     */
     onEvent(_: Bloc<any, any>, event: CounterEvent) {
         console.log(`added ${event}`);
     }

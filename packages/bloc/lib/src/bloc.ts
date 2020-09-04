@@ -5,20 +5,12 @@ import { BlocObserver, EventStreamClosedError, Transition } from '../bloc'
 export type NextFunction<Event, State> = (value: Event) => Observable<Transition<Event, State>>
 
 export abstract class Bloc<Event, State> extends Observable<State> {
-  private static _observer: BlocObserver = new BlocObserver()
+  static observer: BlocObserver = new BlocObserver()
 
   private emitted: boolean = false
   private eventSubject = new Subject<Event>()
   private stateSubject: Subject<State>
   private transitionSubscription: Subscription = Subscription.EMPTY
-
-  static get observer(): BlocObserver {
-    return this._observer
-  }
-
-  static set observer(value: BlocObserver) {
-    this._observer = value
-  }
 
   get state(): State {
     return this._state

@@ -1,4 +1,4 @@
-import { Bloc, BlocDelegate, NextFunction } from '../lib/bloc'
+import { Bloc, BlocObserver, NextFunction } from '../lib/bloc'
 import { Observable } from 'rxjs'
 import { distinct, switchMap } from 'rxjs/operators'
 
@@ -12,8 +12,8 @@ export enum CounterEvent {
 }
 
 export class CounterBloc extends Bloc<CounterEvent, number> {
-  initialState(): number {
-    return 0
+  constructor() {
+    super(0)
   }
 
   async *mapEventToState(event: CounterEvent) {
@@ -45,4 +45,4 @@ export class SwitchMapCounterBloc extends CounterBloc {
   }
 }
 
-export class MyBlocDelegate extends BlocDelegate {}
+export class MyBlocObserver extends BlocObserver {}

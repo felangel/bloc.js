@@ -1,7 +1,6 @@
-import { Bloc } from './bloc'
-import { Transition } from './transition'
+import { Bloc, Transition } from '../bloc'
 
-export class BlocDelegate {
+export class BlocObserver {
   onEvent(_bloc: Bloc<any, any>, _event: any) {
     return
   }

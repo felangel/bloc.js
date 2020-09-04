@@ -1,15 +1,23 @@
 import { BehaviorSubject, Observable, Subject, EMPTY, Subscription } from 'rxjs'
 import { catchError, concatMap } from 'rxjs/operators'
 import { fromAsyncIterable } from './utils/observable-from-async-iterator'
-import { BlocSupervisor } from './bloc-supervisor'
-import { EventStreamClosedError } from './errors'
-import { Transition } from './transition'
+import { BlocObserver, EventStreamClosedError, Transition } from '../bloc'
 
 export type NextFunction<Event, State> = (value: Event) => Observable<State>
 
 export abstract class Bloc<Event, State> extends Observable<State> {
+  private static _observer: BlocObserver = new BlocObserver()
+
   private eventSubject = new Subject<Event>()
   private stateSubject: BehaviorSubject<State>
+
+  static get observer(): BlocObserver {
+    return this._observer
+  }
+
+  static set observer(value: BlocObserver) {
+    this._observer = value
+  }
 
   // Returns the current [state] of the [bloc].
   get state(): State {
@@ -24,13 +32,11 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     return this.stateSubject.subscribe(onData, onError, onDone)
   }
 
-  constructor() {
+  constructor(_state: State) {
     super()
-    this.stateSubject = new BehaviorSubject(this.initialState())
+    this.stateSubject = new BehaviorSubject(_state)
     this.bindStateSubject()
   }
-
-  abstract initialState(): State
 
   abstract mapEventToState(event: Event): AsyncIterableIterator<State>
 
@@ -39,7 +45,7 @@ export abstract class Bloc<Event, State> extends Observable<State> {
       if (this.eventSubject.isStopped) {
         throw new EventStreamClosedError()
       }
-      BlocSupervisor.delegate.onEvent(this, event)
+      Bloc.observer.onEvent(this, event)
       this.onEvent(event)
       this.eventSubject.next(event)
     } catch (error) {
@@ -47,7 +53,7 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     }
   }
 
-  dispose() {
+  close() {
     this.stateSubject.complete()
     this.eventSubject.complete()
   }
@@ -73,7 +79,7 @@ export abstract class Bloc<Event, State> extends Observable<State> {
   }
 
   private handleError(error: any) {
-    BlocSupervisor.delegate.onError(this, error)
+    Bloc.observer.onError(this, error)
     this.onError(error)
   }
 
@@ -92,7 +98,7 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     ).subscribe((nextState: State) => {
       if (this.state === nextState || this.stateSubject.closed) return
       const transition = new Transition(this.state, currentEvent, nextState)
-      BlocSupervisor.delegate.onTransition(this, transition)
+      Bloc.observer.onTransition(this, transition)
       this.onTransition(transition)
       this.stateSubject.next(nextState)
     })

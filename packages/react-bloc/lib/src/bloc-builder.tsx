@@ -15,6 +15,15 @@ export type BlocStateType<S> = {
   blocState: S
 }
 
+/**
+ * `BlocBuilder` handles building a component in response to new `states`.
+ *
+ * @export
+ * @class BlocBuilder
+ * @extends {React.Component<BlocBuilderProps<B, S>, BlocStateType<S>>}
+ * @template B
+ * @template S
+ */
 export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
   BlocBuilderProps<B, S>,
   BlocStateType<S>
@@ -34,7 +43,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     this.subscription = Subscription.EMPTY
     this.state = {
       blocState: this.bloc.state
-    }    
+    }
   }
 
   private subscribe(): void {
@@ -53,7 +62,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     this.subscription.unsubscribe()
   }
 
-  componentDidUpdate(prevProps: BlocBuilderProps<B, S>) {
+  componentDidUpdate(prevProps: BlocBuilderProps<B, S>): void {
     if (prevProps.bloc !== this.props.bloc) {
       this.unsubscribe()
       this.bloc = this.props.bloc
@@ -63,15 +72,15 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.subscribe()
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.unsubscribe()
   }
 
-  render() {
+  render(): JSX.Element {
     return this.builder(this.state.blocState)
   }
 }

@@ -5,42 +5,42 @@ import { BlocBuilder } from '@felangel/react-bloc';
 import './index.css';
 
 enum CounterEvent {
-    increment = 'INCREMENT',
-    decrement = 'DECREMENT'
+  increment = 'INCREMENT',
+  decrement = 'DECREMENT'
 }
 
 class CounterBloc extends Bloc<CounterEvent, number> {
-    initialState(): number {
-        return 0;
-    }
+  constructor() {
+    super(0);
+  }
 
-    async *mapEventToState(event: CounterEvent) {
-        switch (event) {
-            case CounterEvent.increment:
-                yield this.state + 1;
-                break;
-            case CounterEvent.decrement:
-                yield this.state - 1;
-                break;
-        }
+  async *mapEventToState(event: CounterEvent) {
+    switch (event) {
+      case CounterEvent.increment:
+        yield this.state + 1;
+        break;
+      case CounterEvent.decrement:
+        yield this.state - 1;
+        break;
     }
+  }
 }
 
 const App: React.FC = () => {
-    let bloc = new CounterBloc();
-    return (
-        <div className="App">
-            <p>Counter</p>
-            <BlocBuilder
-                bloc={bloc}
-                builder={(count: number) => {
-                    return <p>{count}</p>;
-                }}
-            />
-            <button onClick={() => bloc.add(CounterEvent.increment)}>Increase Counter</button>
-            <button onClick={() => bloc.add(CounterEvent.decrement)}>Decrement Counter</button>
-        </div>
-    );
+  let bloc = new CounterBloc();
+  return (
+    <div className="App">
+      <p>Counter</p>
+      <BlocBuilder
+        bloc={bloc}
+        builder={(count: number) => {
+          return <p>{count}</p>;
+        }}
+      />
+      <button onClick={() => bloc.add(CounterEvent.increment)}>Increase Counter</button>
+      <button onClick={() => bloc.add(CounterEvent.decrement)}>Decrement Counter</button>
+    </div>
+  );
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));

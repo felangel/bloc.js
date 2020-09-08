@@ -1,6 +1,6 @@
 {
   "name": "@felangel/react-bloc",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React Components that make it easy to implement the BLoC (Business Logic Component) design pattern. Built to be used with the bloc.js state management package.",
   "keywords": [
     "react",
@@ -119,7 +119,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "@felangel/bloc": "^0.2.3",
+    "@felangel/bloc": "^0.3.0",
     "react": "^16.9.0",
     "rxjs": "^6.5.2"
   }

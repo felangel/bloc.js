@@ -1,3 +1,16 @@
+# 0.3.0
+
+Feature parity with dart
+
+- **BREAKING**: rename `BlocDelegate` -> `BlocObserver`
+- **BREAKING**: remove `BlocSupervisor`
+- **BREAKING**: `transformEvents` returns `Observable<Transition<Event, State>>`
+- **BREAKING**: remove `initialState` in favor of `super` constructor
+- **BREAKING**: rename `Transition` state to `currentState`
+- feat: add `transformTransitions`
+- refactor: internal implementation improvements
+- docs: add inline documentation and return types
+
 # 0.2.3
 
 Internal improvements and documentation updates

@@ -71,7 +71,7 @@ bloc.add(CounterEvent.increment)
 // later...
 
 // Access the new `state`.
-print(bloc.state) // 1
+console.log(bloc.state) // 1
 
 // Close the `bloc` when it is no longer needed.
 bloc.close()

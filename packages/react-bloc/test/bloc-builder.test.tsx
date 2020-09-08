@@ -9,8 +9,8 @@ enum CounterEvent {
   decrement
 }
 class CounterBloc extends Bloc<CounterEvent, number> {
-  initialState(): number {
-    return 0
+  constructor() {
+    super(0)
   }
 
   async *mapEventToState(event: CounterEvent) {

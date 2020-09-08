@@ -1,3 +1,9 @@
+# 0.3.0
+
+- **BREAKING**: upgrade to `bloc ^0.3.0`
+- docs: inline documentation improvements
+- docs: minor improvements to example
+
 # 0.2.1
 
 Fix compatibility/upgrade issues

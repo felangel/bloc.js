@@ -1,22 +1,26 @@
 import { Bloc } from '@felangel/bloc'
 import * as React from 'react'
 import { Subscription } from 'rxjs'
+import { BlocProvider } from '../react-bloc'
 
 export type BlocBuilderCondition<S> = (previous: S, current: S) => boolean
 export type BlocElementBuilder<S> = (state: S) => JSX.Element
 
-export type BlocBuilderProps<B extends Bloc<any, S>, S> = {
-  bloc: B
+export interface BlocBuilderPropsBase<S> {
   builder: BlocElementBuilder<S>
   condition?: BlocBuilderCondition<S>
+}
+
+type BlocBuilderPropsInternal<B extends Bloc<any, S>, S> = BlocBuilderPropsBase<S> & {
+  bloc: B
 }
 
 export type BlocStateType<S> = {
   blocState: S
 }
 
-export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
-  BlocBuilderProps<B, S>,
+class BlocBuilderInternal<B extends Bloc<any, S>, S> extends React.Component<
+  BlocBuilderPropsInternal<B, S>,
   BlocStateType<S>
 > {
   private bloc: B
@@ -25,7 +29,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
   private condition: BlocBuilderCondition<S> | null
   private builder: BlocElementBuilder<S>
 
-  constructor(props: BlocBuilderProps<B, S>) {
+  constructor(props: BlocBuilderPropsInternal<B, S>) {
     super(props)
     this.bloc = props.bloc
     this.builder = props.builder
@@ -34,7 +38,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     this.subscription = Subscription.EMPTY
     this.state = {
       blocState: this.bloc.state
-    }    
+    }
   }
 
   private subscribe(): void {
@@ -53,7 +57,7 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
     this.subscription.unsubscribe()
   }
 
-  componentDidUpdate(prevProps: BlocBuilderProps<B, S>) {
+  componentDidUpdate(prevProps: BlocBuilderPropsInternal<B, S>) {
     if (prevProps.bloc !== this.props.bloc) {
       this.unsubscribe()
       this.bloc = this.props.bloc
@@ -74,4 +78,29 @@ export class BlocBuilder<B extends Bloc<any, S>, S> extends React.Component<
   render() {
     return this.builder(this.state.blocState)
   }
+}
+
+export type BlocBuilderProps<B extends Bloc<any, S>, S> = BlocBuilderPropsBase<S> & {
+  type?: string
+  bloc?: B
+}
+
+export function BlocBuilder<B extends Bloc<any, S>, S>(
+  props: BlocBuilderProps<B, S>
+): JSX.Element {
+  if (props.bloc) {
+    return (
+      <BlocBuilderInternal bloc={props.bloc} builder={props.builder} condition={props.condition} />
+    )
+  } else if (props.type) {
+    const context = BlocProvider.context<B>(props.type)
+    return (
+      <context.Consumer>
+        {bloc => (
+          <BlocBuilderInternal bloc={bloc} builder={props.builder} condition={props.condition} />
+        )}
+      </context.Consumer>
+    )
+  }
+  throw Error('BlocBuilder: Expected either "bloc" or "type" property to be not null.')
 }

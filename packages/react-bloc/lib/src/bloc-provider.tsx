@@ -18,9 +18,6 @@ export class BlocProvider<B extends Bloc<any, any>> extends React.Component<
   React.PropsWithChildren<BlocProviderProps<B>>,
   BlocProviderState<B>
 > {
-  //   private blocContext: React.Context<B | null>
-  //   private bloc: B | null = null
-
   constructor(props: BlocProviderProps<B>) {
     super(props)
 
@@ -54,8 +51,8 @@ export class BlocProvider<B extends Bloc<any, any>> extends React.Component<
 
   private unsubscribe(): void {
     if (!this.props.bloc && this.state.bloc) {
-      // dispose only if BlocProvider was the creator
-      this.state.bloc.dispose()
+      // close only if BlocProvider was the creator
+      this.state.bloc.close()
     }
   }
 

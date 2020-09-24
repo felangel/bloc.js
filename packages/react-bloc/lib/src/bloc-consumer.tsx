@@ -9,6 +9,14 @@ export type BlocConsumerProps<B extends Bloc<any, any>> = {
   consumer: BlocConsumerBuilder<B>
 }
 
+/**
+ * `BlocConsumer` handles building a component in response to new 'blocs' of a certain type
+ * @export
+ * @function BlocConsumer
+ * @param {BlocConsumerProps<B>} props
+ * @template B
+ * @returns {JSX.Element}
+ */
 export function BlocConsumer<B extends Bloc<any, any>>(props: BlocConsumerProps<B>): JSX.Element {
   const context = BlocProvider.context<B>(props.type)
   return <context.Consumer>{props.consumer}</context.Consumer>

@@ -9,88 +9,78 @@ export interface BlocProviderProps<B extends Bloc<any, any>> {
   type: string
 }
 
-export interface BlocProviderState<B extends Bloc<any, any>> {
+interface BlocProviderState<B extends Bloc<any, any>> {
   bloc: B | null
   blocContext: React.Context<B | null>
+  shouldDestroy: boolean
 }
 
-export class BlocProvider<B extends Bloc<any, any>> extends React.Component<
-  React.PropsWithChildren<BlocProviderProps<B>>,
-  BlocProviderState<B>
-> {
-  constructor(props: BlocProviderProps<B>) {
-    super(props)
+/**
+ * `BlocProvider` provides bloc of a certain 'type' to all descendants
+ * @export
+ * @function BlocProvider
+ * @param {BlocProviderProps<B>} props
+ * @template B
+ * @returns {JSX.Element}
+ */
+export function BlocProvider<B extends Bloc<any, any>>(
+  props: React.PropsWithChildren<BlocProviderProps<B>>
+): JSX.Element {
+  const [state, setState] = React.useState<BlocProviderState<B> | null>(null)
 
-    this.state = this.getStateFromProps()
-  }
-
-  private getStateFromProps(): BlocProviderState<B> {
-    let bloc: B | null = null
-
-    if (this.props.bloc) {
-      bloc = this.props.bloc
-    } else if (this.props.create) {
-      bloc = this.props.create()
-    } else {
-      throw Error('BlocProvider: Expected either "bloc" or "create" property to be not null.')
+  React.useEffect(() => {
+    setState(BlocProvider.getStateFromProps(props))
+    return () => {
+      if (state && state.bloc && state.shouldDestroy) {
+        // close only if BlocProvider was the creator
+        state.bloc.close()
+      }
     }
+  }, [props.bloc, props.type, props.create])
 
-    let blocContext = BlocProvider.contextTypeMap[this.props.type] as React.Context<B | null>
-    if (!blocContext) {
-      blocContext = React.createContext<B | null>(bloc)
-      blocContext.displayName = this.props.type
-      BlocProvider.contextTypeMap[this.props.type] = blocContext as React.Context<unknown>
-    }
-    return { bloc, blocContext }
-  }
-
-  private subscribe(): void {
-    const state = this.getStateFromProps()
-    this.setState(state)
-  }
-
-  private unsubscribe(): void {
-    if (!this.props.bloc && this.state.bloc) {
-      // close only if BlocProvider was the creator
-      this.state.bloc.close()
-    }
-  }
-
-  componentDidUpdate(prevProps: BlocProviderProps<B>) {
-    if (
-      prevProps.bloc !== this.props.bloc ||
-      prevProps.type !== this.props.type ||
-      prevProps.create !== this.props.create
-    ) {
-      this.unsubscribe()
-      this.subscribe()
-    }
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
-  render() {
+  if (state) {
     return (
-      <this.state.blocContext.Provider value={this.state.bloc}>
-        {this.props.children}
-      </this.state.blocContext.Provider>
+      <state.blocContext.Provider value={state.bloc}>{props.children}</state.blocContext.Provider>
     )
   }
+  return <React.Fragment></React.Fragment>
+}
 
-  static clear(): void {
-    BlocProvider.contextTypeMap = {}
+BlocProvider.contextTypeMap = {} as Record<string, React.Context<unknown> | null>
+
+BlocProvider.clear = function(): void {
+  BlocProvider.contextTypeMap = {}
+}
+
+BlocProvider.context = function<B>(type: string): React.Context<B> {
+  const context = BlocProvider.contextTypeMap[type]
+  if (context) {
+    return context as React.Context<B>
   }
 
-  static context<B>(type: string): React.Context<B> {
-    const context = BlocProvider.contextTypeMap[type]
-    if (context) {
-      return context as React.Context<B>
-    }
+  throw Error('BlocProvider: BlocContext of type ' + type + ' not found!')
+}
 
-    throw Error('BlocProvider: BlocContext of type ' + type + ' not found!')
+BlocProvider.getStateFromProps = function<B extends Bloc<any, any>>(
+  props: BlocProviderProps<B>
+): BlocProviderState<B> {
+  let bloc: B | null = null
+  let shouldDestroy = false
+
+  if (props.bloc) {
+    bloc = props.bloc
+  } else if (props.create) {
+    bloc = props.create()
+    shouldDestroy = true
+  } else {
+    throw Error('BlocProvider: Expected either "bloc" or "create" property to be not null.')
   }
 
-  private static contextTypeMap = {} as Record<string, React.Context<unknown> | null>
+  let blocContext = BlocProvider.contextTypeMap[props.type] as React.Context<B | null>
+  if (!blocContext) {
+    blocContext = React.createContext<B | null>(bloc)
+    blocContext.displayName = props.type
+    BlocProvider.contextTypeMap[props.type] = blocContext as React.Context<unknown>
+  }
+  return { bloc, blocContext, shouldDestroy }
 }

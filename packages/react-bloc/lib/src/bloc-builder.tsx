@@ -87,12 +87,11 @@ export type BlocBuilderProps<B extends Bloc<any, S>, S> = BlocBuilderPropsBase<S
 
 /**
  * `BlocBuilder` handles building a component in response to new `states`.
- *
  * @export
- * @class BlocBuilder
- * @extends {React.Component<BlocBuilderProps<B, S>, BlocStateType<S>>}
+ * @function BlocBuilder
  * @template B
  * @template S
+ * @returns {JSX.Element}
  */
 export function BlocBuilder<B extends Bloc<any, S>, S>(
   props: BlocBuilderProps<B, S>

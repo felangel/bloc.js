@@ -1,4 +1,4 @@
-import { BlocProvider, BlocBuilder, BlocConsumer } from '../lib/react-bloc'
+import { BlocBuilder, BlocConsumer, BlocProvider } from '../lib/react-bloc'
 import * as React from 'react'
 import { Bloc } from '@felangel/bloc'
 import { mount } from 'enzyme'
@@ -91,7 +91,7 @@ describe('BlocProvider', () => {
     BlocProvider.clear()
   })
 
-  it('renders the class component properly', () => {
+  it('renders the class component properly', done => {
     const wrapper = mount(<CounterApp title={'dsad'} />)
     expect(wrapper.find('CounterApp').length).toBe(1)
     expect(wrapper.find('div').length).toBe(1)
@@ -102,6 +102,10 @@ describe('BlocProvider', () => {
     expect(wrapper.find('CounterComponent').length).toBe(1)
     expect(wrapper.find('BlocBuilder').length).toBe(2)
     expect(wrapper.find('p').length).toBe(2)
+    setImmediate(() => {
+      wrapper.unmount()
+      done()
+    })
   })
 
   it('throws input error when blocprovider not provided create or bloc', () => {

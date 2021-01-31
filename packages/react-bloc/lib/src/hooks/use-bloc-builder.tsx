@@ -18,8 +18,9 @@ export default function useBlocBuilder(
   const subscribe = () => {
     subscription.current = thisBloc.current.listen((s: any) => {
       let rebuild: boolean = options?.condition
-        ? options.condition.call(null, previousState.current, state)
+        ? options.condition.call(null, state, s)
         : true;
+
       if (rebuild) setState(s);
       previousState.current = state;
     });
@@ -36,7 +37,6 @@ export default function useBlocBuilder(
     } else {
       unsubscribe();
       thisBloc.current = bloc;
-      setState(bloc.state);
       subscribe();
     }
     return () => unsubscribe();

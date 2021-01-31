@@ -15,7 +15,7 @@ export default function useBlocBuilder(bloc: any, options?: BlocBuilderOptions) 
   const subscribe = () => {
     subscription.current = thisBloc.current.listen((s: any) => {
       let rebuild: boolean =
-        options && options.condition !== null ? options.condition.call(null, state, s) : true
+        options && options.condition ? options.condition.call(null, state, s) : true
 
       if (rebuild) setState(s)
       previousState.current = state

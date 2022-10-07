@@ -6,7 +6,7 @@
     "@felangel/react-bloc": "../",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^5.0.1",
     "typescript": "3.6.3"
   },
   "devDependencies": {

@@ -5,14 +5,14 @@ import {
   CounterBlocError,
   DistinctCounterBloc,
   SwitchMapCounterBloc
-} from './test-helpers'
+} from './bloc-test-helpers'
 
 describe('CounterBloc', () => {
   let counterBloc: CounterBloc
   let blocObserver: BlocObserver
 
   beforeEach(() => {
-    counterBloc = new CounterBloc()
+    counterBloc = new CounterBloc(0)
     blocObserver = Bloc.observer
     spyOn(blocObserver, 'onEvent').and.returnValue(undefined)
     spyOn(blocObserver, 'onTransition').and.returnValue(undefined)
@@ -232,7 +232,7 @@ describe('CounterBloc', () => {
   })
 
   it('calls onError when onTransition throws', async done => {
-    counterBloc = new CounterBloc(true)
+    counterBloc = new CounterBloc(0,true)
     const emittedStates: number[] = []
     counterBloc.listen(
       state => {

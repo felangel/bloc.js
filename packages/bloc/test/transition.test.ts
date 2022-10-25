@@ -1,5 +1,5 @@
 import { Transition } from '../lib/bloc'
-import { CounterEvent } from './test-helpers'
+import { CounterEvent } from './bloc-test-helpers'
 
 describe('Transition', () => {
   it('is instantiable', () => {

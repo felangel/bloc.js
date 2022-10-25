@@ -14,9 +14,89 @@
 
 ---
 
-A javascript library that helps implement the [BLoC pattern](https://www.didierboelens.com/2018/08/reactive-programming---streams---bloc).
+A javascript library that helps implement
+the [BLoC pattern](https://www.didierboelens.com/2018/08/reactive-programming---streams---bloc).
 
 **Learn more at [bloclibrary.dev](https://bloclibrary.dev)!**
+
+### Cubit
+
+![Cubit Architecture](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/cubit_architecture_full.png)
+
+A `Cubit` is class which extends `BlocBase` and can be extended to manage any type of state. `Cubit`
+requires an initial state which will be the state before `emit` has been called. The current state
+of a `cubit` can be accessed via the `state` getter and the state of the `cubit` can be updated by
+calling `emit` with a new `state`.
+
+![Cubit Flow](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/cubit_flow.png)
+
+State changes in cubit begin with predefined function calls which can use the `emit` method to
+output new states. `onChange` is called right before a state change occurs and contains the current
+and next state.
+
+#### Creating a Cubit
+
+```ts
+/// A `CounterCubit` which manages an `int` as its state.
+class CounterCubit extends Cubit<number> {
+  /// The initial state of the `CounterCubit` is 0.
+  constructor() {
+    super(0)
+  }
+
+  /// When increment is called, the current state
+  /// of the cubit is accessed via `state` and
+  /// a new `state` is emitted via `emit`.
+  increment(): void {
+    this.emit(this.state + 1)
+  };
+}
+```
+
+#### Using a Cubit
+
+```ts
+function main() {
+  /// Create a `CounterCubit` instance.
+  const cubit = CounterCubit();
+  /// Access the state of the `cubit` via `state`.
+  console.log(cubit.state); // 0
+  /// Interact with the `cubit` to trigger `state` changes.
+  cubit.increment();
+  /// Access the new `state`.
+  console.log(cubit.state); // 1
+  /// Close the `cubit` when it is no longer needed.
+  cubit.close();
+}
+```
+
+#### Observing a Cubit
+
+`onChange` can be overridden to observe state changes for a single `cubit`.
+
+`onError` can be overridden to observe errors for a single `cubit`.
+
+```ts
+class CounterCubit extends Cubit<number> {
+  constructor() {
+    super(0)
+  }
+
+  increment(): void {
+    this.emit(this.state + 1)
+  }
+
+  onChange(change: Change<number>): void {
+    super.onChange(change)
+    console.log(change);
+  }
+
+  onError(error: unknown): void {
+    console.log(`error ${error}`);
+    super.onError(error);
+  }
+}
+```
 
 ### Bloc
 
@@ -26,7 +106,14 @@ A `Bloc` is a component which converts incoming events into outgoing states.
 
 ![Bloc Flow](https://raw.githubusercontent.com/felangel/bloc/master/docs/assets/bloc_flow.png)
 
-State changes in bloc begin when events are added which triggers `onEvent`. The events are then funnelled through `transformEvents`. By default, `transformEvents` uses `asyncExpand` to ensure each event is processed in the order it was added but it can be overridden to manipulate the incoming event stream. `mapEventToState` is then invoked with the transformed events and is responsible for yielding states in response to the incoming events. `transitions` are then funnelled through `transformTransitions` which can be overridden to manipulation the outgoing state changes. Lastly, `onTransition` is called just before the state is updated and contains the current state, event, and next state.
+State changes in bloc begin when events are added which triggers `onEvent`. The events are then
+funnelled through `transformEvents`. By default, `transformEvents` uses `asyncExpand` to ensure each
+event is processed in the order it was added but it can be overridden to manipulate the incoming
+event stream. `mapEventToState` is then invoked with the transformed events and is responsible for
+yielding states in response to the incoming events. `transitions` are then funnelled
+through `transformTransitions` which can be overridden to manipulation the outgoing state changes.
+Lastly, `onTransition` is called just before the state is updated and contains the current state,
+event, and next state.
 
 #### Creating a Bloc
 
@@ -43,7 +130,7 @@ class CounterBloc extends Bloc<CounterEvent, number> {
     super(0)
   }
 
-  async *mapEventToState(event: CounterEvent) {
+  async* mapEventToState(event: CounterEvent) {
     switch (event) {
       // When a `CounterEvent.increment` event is added,
       // the current `state` of the bloc is accessed via the `state` property
@@ -89,7 +176,7 @@ class CounterBloc extends Bloc<CounterEvent, number> {
     super(0)
   }
 
-  async *mapEventToState(event: CounterEvent) {
+  async* mapEventToState(event: CounterEvent) {
     switch (event) {
       case CounterEvent.increment:
         yield this.state + 1
@@ -139,7 +226,8 @@ Bloc.observer = new MyBlocObserver()
 
 ## Examples
 
-- [Counter](https://github.com/felangel/bloc.js/tree/master/packages/bloc/example) - an example of how to create a `CounterBloc` in a pure typescript app.
+- [Counter](https://github.com/felangel/bloc.js/tree/master/packages/bloc/example) - an example of
+  how to create a `CounterBloc` in a pure typescript app.
 
 ### Maintainers
 

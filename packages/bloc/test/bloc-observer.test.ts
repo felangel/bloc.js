@@ -1,5 +1,5 @@
 import { BlocObserver, Transition, Bloc } from '../lib/bloc'
-import { CounterBloc, CounterEvent, CounterBlocError, MyBlocObserver } from './test-helpers'
+import { CounterBloc, CounterEvent, CounterBlocError, MyBlocObserver } from './bloc-test-helpers'
 
 describe('BlocObserver', () => {
   let blocObserver: BlocObserver

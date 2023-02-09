@@ -1,7 +1,8 @@
 {
+  "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["./tsconfig.json"],
+    "project": ["tsconfig.eslint.json"],
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -17,5 +18,14 @@
   "env": {
     "browser": true,
     "es2021": true
-  }
+  },
+  "overrides": [
+    {
+      "files": ["test/**/*.test.ts"],
+      "env": {
+        "jest": true,
+        "node": true
+      }
+    }
+  ]
 }

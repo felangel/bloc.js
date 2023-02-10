@@ -22,7 +22,7 @@ export abstract class Bloc<Event, State> extends Observable<State> {
     this.bindStateSubject()
   }
 
-  private emitted: boolean = false
+  private emitted = false
   private eventSubject = new Subject<Event>()
   private stateSubject: Subject<State>
   private transitionSubscription: Subscription = Subscription.EMPTY

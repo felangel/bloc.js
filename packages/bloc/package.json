@@ -87,7 +87,7 @@
     "jest-config": "^26.4.2",
     "lint-staged": "^13.1.0",
     "lodash.camelcase": "^4.3.0",
-    "prettier": "^1.14.3",
+    "prettier": "^2.8.4",
     "replace-in-file": "^3.4.2",
     "rimraf": "^2.6.2",
     "rollup": "^0.67.0",

@@ -140,6 +140,7 @@ describe('bloc', () => {
     })
 
     it('should emit initial state only once', () => {
+      expect.assertions(2)
       let errors: Error[] = []
 
       let states: CounterState[] = []

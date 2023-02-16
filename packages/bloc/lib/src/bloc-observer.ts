@@ -1,42 +1,30 @@
-import { Bloc, Transition } from '../bloc'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-/**
- * An interface for observing the behavior of all `Bloc` instances.
- *
- * @export
- * @class BlocObserver
- */
+import { Bloc, BlocBase, Transition } from ".";
+import { Change } from './';
+
 export class BlocObserver {
-  /**
-   * Called whenever an `event` is added to any `bloc`.
-   *
-   * @param {Bloc<any, any>} _bloc
-   * @param {*} _event
-   * @memberof BlocObserver
-   */
+  onCreate(_bloc: BlocBase<any>): void {
+    return;
+  }
+
   onEvent(_bloc: Bloc<any, any>, _event: any): void {
-    return
+    return;
   }
 
-  /**
-   * Called whenever a `transition` occurs in any `bloc`.
-   *
-   * @param {Bloc<any, any>} _bloc
-   * @param {Transition<any, any>} _transition
-   * @memberof BlocObserver
-   */
   onTransition(_bloc: Bloc<any, any>, _transition: Transition<any, any>): void {
-    return
+    return;
   }
 
-  /**
-   * Called whenever an `error` occurs in any `bloc`.
-   *
-   * @param {Bloc<any, any>} _bloc
-   * @param {*} _error
-   * @memberof BlocObserver
-   */
-  onError(_bloc: Bloc<any, any>, _error: any): void {
-    return
+  onError(_bloc: BlocBase<any>, _error: Error): void {
+    return;
+  }
+
+  onChange(_bloc: BlocBase<any>, _change: Change<any>) {
+    return;
+  }
+
+  onClose(_bloc: BlocBase<any>): void {
+    return;
   }
 }

@@ -1,7 +1,7 @@
-import { BlocBase } from './base';
+import { BlocBase } from './base'
 
 export abstract class Cubit<State> extends BlocBase<State> {
   constructor(state: State) {
-    super(state);
+    super(state)
   }
 }

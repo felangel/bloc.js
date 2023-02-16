@@ -1,4 +1,4 @@
-import { BlocEvent } from '../../../lib/bloc';
+import { BlocEvent } from '../../../lib/bloc'
 
 export abstract class CounterEvent extends BlocEvent {}
 export class CounterIncrementEvent extends CounterEvent {}

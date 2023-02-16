@@ -5,6 +5,7 @@ import camelCase from 'lodash.camelcase'
 import typescript from 'rollup-plugin-typescript2'
 import json from 'rollup-plugin-json'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('./package.json')
 
 const libraryName = 'bloc'
@@ -17,21 +18,21 @@ export default {
       name: camelCase(libraryName),
       globals: {
         rxjs: 'rxjs',
-        'rxjs/operators': 'rxjs.operators'
+        'rxjs/operators': 'rxjs.operators',
       },
       format: 'umd',
-      sourcemap: true
+      sourcemap: true,
     },
     {
       file: pkg.module,
       format: 'es',
-      sourcemap: true
-    }
+      sourcemap: true,
+    },
   ],
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
   external: ['rxjs', 'rxjs/operators'],
   watch: {
-    include: 'lib/**'
+    include: 'lib/**',
   },
   plugins: [
     // Allow json resolution
@@ -46,6 +47,6 @@ export default {
     resolve(),
 
     // Resolve source maps to the original source
-    sourceMaps()
-  ]
+    sourceMaps(),
+  ],
 }

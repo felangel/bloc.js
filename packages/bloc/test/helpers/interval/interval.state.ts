@@ -1,18 +1,22 @@
-type IntervalStatus = "initial" | "loading" | "ready" | "failed"
+type IntervalStatus = 'initial' | 'loading' | 'ready' | 'failed'
 
 export class IntervalState {
-  constructor(public data: number, public status: IntervalStatus = "initial", public error?: Error) { }
+  constructor(
+    public data: number,
+    public status: IntervalStatus = 'initial',
+    public error?: Error
+  ) {}
 
   ready(data: number) {
-    return new IntervalState(data, "ready")
+    return new IntervalState(data, 'ready')
   }
 
   loading() {
-    return new IntervalState(this.data, "loading")
+    return new IntervalState(this.data, 'loading')
   }
 
   failed(error: Error) {
-    return new IntervalState(this.data, "failed", error)
+    return new IntervalState(this.data, 'failed', error)
   }
 }
 

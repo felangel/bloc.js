@@ -1,16 +1,14 @@
-import { CounterBloc } from "./counter.bloc";
-import { CounterEvent } from "./counter.event";
+import { CounterBloc } from './counter.bloc'
+import { CounterEvent } from './counter.event'
 
-      export class SeedEvent extends CounterEvent { }
+export class SeedEvent extends CounterEvent {}
 
-      export class SeededCounterBloc extends CounterBloc {
+export class SeededCounterBloc extends CounterBloc {
+  constructor() {
+    super()
 
-        constructor() {
-          super()
-
-          this.on(SeedEvent, (event, emit) => {
-            emit(this.state)
-          })
-        }
-
-      }
+    this.on(SeedEvent, (event, emit) => {
+      emit(this.state)
+    })
+  }
+}

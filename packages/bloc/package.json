@@ -27,8 +27,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "lint": "eslint 'lib/src/**/*.ts' 'test/**/*.ts'",
-    "format": "prettier --write \"lib/src/**/*.ts\"",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc lib/bloc.ts --out docs --theme default",
     "start": "rollup -c rollup.config.ts -w",

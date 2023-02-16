@@ -2,17 +2,12 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": ["./tsconfig.eslint.json"],
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -28,9 +23,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "test/**/*.test.ts"
-      ],
+      "files": ["test/**/*.ts"],
       "env": {
         "jest": true,
         "node": true

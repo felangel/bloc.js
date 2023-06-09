@@ -1,4 +1,4 @@
-import { BlocBuilder } from '../lib/react-bloc'
+import { BlocBuilder, BlocProvider } from '../lib/react-bloc'
 import * as React from 'react'
 import { Bloc } from '@felangel/bloc'
 import { mount } from 'enzyme'
@@ -63,7 +63,10 @@ class CounterApp extends React.Component<CounterBlocProps<CounterBloc>, any> {
   }
 }
 
-describe('BlocProvider', () => {
+describe('BlocBuilder', () => {
+  beforeEach(() => {
+    BlocProvider.clear()
+  })
   it('renders the component properly', () => {
     let bloc: CounterBloc = new CounterBloc()
     const wrapper = mount(<CounterApp title={'dsad'} bloc={bloc} />)
@@ -172,5 +175,24 @@ describe('BlocProvider', () => {
       wrapper.unmount()
       done()
     })
+  })
+
+  it('throws input error when blocbuilder not provided type or bloc', () => {
+    const t = () => {
+      const wrapper = mount(
+        <div>
+          <BlocBuilder<CounterBloc, number> builder={(s: number) => <div>{s}</div>} />
+        </div>
+      )
+    }
+    try {
+      t()
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      expect(error).toHaveProperty(
+        'message',
+        'BlocBuilder: Expected either "bloc" or "type" property to be not null.'
+      )
+    }
   })
 })

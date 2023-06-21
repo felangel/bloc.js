@@ -33,7 +33,7 @@ State changes in bloc begin when events are added which triggers `onEvent`. The 
 ```ts
 // The events which `CounterBloc` will react to.
 enum CounterEvent {
-  increment = 'INCREMENT'
+  increment = 'INCREMENT',
 }
 
 // A `CounterBloc` which handles converting `CounterEvent`s into `int`s.
@@ -81,7 +81,7 @@ bloc.close()
 
 ```ts
 enum CounterEvent {
-  increment = 'INCREMENT'
+  increment = 'INCREMENT',
 }
 
 class CounterBloc extends Bloc<CounterEvent, number> {

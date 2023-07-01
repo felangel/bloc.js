@@ -1,4 +1,4 @@
-import { Bloc, BlocObserver, Transition } from '@felangel/bloc';
+import { Bloc, BlocObserver, Transition } from '../lib/bloc';
 
 enum CounterEvent {
   increment = 'INCREMENT',

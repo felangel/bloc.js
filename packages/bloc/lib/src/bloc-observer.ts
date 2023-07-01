@@ -1,4 +1,5 @@
 import { Bloc, Transition } from '../bloc'
+import { BlocBase } from './bloc-base';
 
 /**
  * An interface for observing the behavior of all `Bloc` instances.
@@ -7,6 +8,18 @@ import { Bloc, Transition } from '../bloc'
  * @class BlocObserver
  */
 export class BlocObserver {
+  /**
+   * Called whenever an `state` is added to any `bloc`.
+   *
+   * @param {Bloc<any, any>} _bloc
+   * @param {*} _currentState Current State
+   * @param {*} _state new State
+   * @memberof BlocObserver
+   */
+  onChange(_bloc: BlocBase<any>, _currentState: any, _state: any): void {
+    return
+  }
+
   /**
    * Called whenever an `event` is added to any `bloc`.
    *
@@ -36,7 +49,18 @@ export class BlocObserver {
    * @param {*} _error
    * @memberof BlocObserver
    */
-  onError(_bloc: Bloc<any, any>, _error: any): void {
+  onError(_bloc: BlocBase<any>, _error: any): void {
     return
+  }
+
+  /**
+ * Called whenever the `bloc` close
+ *
+ * @param {Bloc<any, any>} _bloc
+ * @param {*} _error
+ * @memberof BlocObserver
+ */
+  onClose(_bloc: BlocBase<any>) {
+    return;
   }
 }

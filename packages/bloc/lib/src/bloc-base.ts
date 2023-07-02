@@ -1,7 +1,6 @@
 import { Observable, Subject, Subscription } from "rxjs";
-import { BlocObserver } from "./bloc-observer";
 import { Bloc } from "./bloc";
-import { EventStreamClosedError } from "./errors";
+import { BadState } from "./errors";
 
 export class BlocBase<State> extends Observable<State> {
 
@@ -20,23 +19,24 @@ export class BlocBase<State> extends Observable<State> {
     }
 
     get isClosed(): boolean {
-        return this._stateSubject.closed;
+        return this._stateSubject.isStopped;
     }
 
     emit(state: State): void {
         try {
             if (this.isClosed) {
-                throw new EventStreamClosedError();
+                throw new BadState();
             }
             if (state == this._state && this._emitted) return;
 
+            this.onChange(this._state, state);
             this._state = state;
             this._stateSubject.next(this._state);
             this._emitted = true;
         }
         catch (e) {
             this.addError(e);
-            throw Error("Error While Emitting State");
+            throw e;
         }
     }
 
@@ -59,14 +59,14 @@ export class BlocBase<State> extends Observable<State> {
 
 
     /**
- * Adds a Subscription to the bloc's state stream.
- *
- * @param {(value: State) => void} onData
- * @param {(((onError: any) => any) | undefined)} [onError]
- * @param {((() => any) | undefined)} [onDone]
- * @return {*}  {Subscription}
- * @memberof Bloc
- */
+     * Adds a Subscription to the bloc's state stream.
+     *
+     * @param {(value: State) => void} onData
+     * @param {(((onError: any) => any) | undefined)} [onError]
+     * @param {((() => any) | undefined)} [onDone]
+     * @return {*}  {Subscription}
+     * @memberof Bloc
+     */
     listen(
         onData: (value: State) => void,
         onError?: ((onError: any) => any) | undefined,

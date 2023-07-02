@@ -1,8 +1,8 @@
-import { Bloc, BlocObserver, NextFunction, Transition } from '../lib/bloc'
+import { Bloc, BlocObserver, Cubit, NextFunction, Transition } from '../lib/bloc'
 import { Observable } from 'rxjs'
 import { distinct, switchMap } from 'rxjs/operators'
 
-export class CounterBlocError extends Error {}
+export class CounterBlocError extends Error { }
 
 export enum CounterEvent {
   increment = 'INCREMENT',
@@ -53,4 +53,22 @@ export class SwitchMapCounterBloc extends CounterBloc {
   }
 }
 
-export class MyBlocObserver extends BlocObserver {}
+export class MyBlocObserver extends BlocObserver { }
+
+
+export class CounterCubit extends Cubit<number> {
+  constructor() {
+    super(0);
+  }
+
+  increment() {
+    this.emit(this.state + 1);
+  }
+  decrement() {
+    this.emit(this.state - 1);
+  }
+
+  doNothing() {
+    this.emit(this.state);
+  }
+}

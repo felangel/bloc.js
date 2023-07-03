@@ -1,9 +1,10 @@
 import { BlocObserver, Transition, Bloc } from '../lib/bloc'
-import { CounterBloc, CounterEvent, CounterBlocError, MyBlocObserver } from './test-helpers'
+import { CounterBloc, CounterEvent, CounterBlocError, MyBlocObserver, CounterCubit } from './test-helpers'
 
 describe('BlocObserver', () => {
   let blocObserver: BlocObserver
   let counterBloc: CounterBloc
+  let counterCubit: CounterCubit;
 
   beforeEach(() => {
     blocObserver = new BlocObserver()

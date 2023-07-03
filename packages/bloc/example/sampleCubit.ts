@@ -1,4 +1,4 @@
-import { Cubit } from "../lib/bloc";
+import { Cubit } from "@felangel/bloc";
 
 class CounterCubit extends Cubit<number> {
     constructor() {

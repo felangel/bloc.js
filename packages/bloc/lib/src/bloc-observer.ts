@@ -1,4 +1,7 @@
-import { Bloc, Transition } from '../bloc'
+import { BlocBase } from './bloc_base'
+import { Change } from './change'
+import { Bloc } from './bloc'
+import { Transition } from './transition'
 
 /**
  * An interface for observing the behavior of all `Bloc` instances.
@@ -36,7 +39,17 @@ export class BlocObserver {
    * @param {*} _error
    * @memberof BlocObserver
    */
-  onError(_bloc: Bloc<any, any>, _error: any): void {
+  onError(_bloc: BlocBase<any>, _error: any): void {
     return
   }
+
+  /**
+   * Called whenever a [Change] occurs in any [bloc]
+   * A [change] occurs when a new state is emitted.
+   * [onChange] is called before a bloc's state has been updated.
+   */
+  onChange(_bloc: BlocBase<any>, _change: Change<any>): void {
+    return
+  }
+
 }

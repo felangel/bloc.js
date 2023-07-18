@@ -12,8 +12,8 @@ export enum CounterEvent {
 }
 
 export class CounterBloc extends Bloc<CounterEvent, number> {
-  constructor(private throwOnTransition: boolean = false) {
-    super(0)
+  constructor(initialState:number = 0,private throwOnTransition: boolean = false) {
+    super(initialState)
   }
 
   async *mapEventToState(event: CounterEvent) {
